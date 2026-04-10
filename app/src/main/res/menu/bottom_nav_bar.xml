@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+         android:id="@+id/menu_home"
+         android:title="Home"
+         android:icon="@drawable/home"/>
+    <item
+        android:id="@+id/menu_movie"
+        android:title="Discover"
+        android:icon="@drawable/movie_list"/>
+
+    <item
+        android:id="@+id/menu_favorites"
+        android:title="Favorites"
+        android:icon="@drawable/favorite"/>
+
+    <item
+        android:id="@+id/menu_watchlist"
+        android:title="Watchlist"
+        android:icon="@drawable/watchlist"/>
+    <item
+        android:id="@+id/menu_profile"
+        android:title="Profile"
+        android:icon="@drawable/profile"/>
+</menu>
