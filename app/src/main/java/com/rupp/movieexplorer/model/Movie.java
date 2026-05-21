@@ -9,6 +9,7 @@ public class Movie {
     private int id;
     private String title;
     private String overview;
+    private String release_date;
 
     @SerializedName("poster_path")
     private String posterPath;
@@ -18,6 +19,7 @@ public class Movie {
 
     @SerializedName("backdrop_path")
     private String backdropPath;
+
 
     public int getId() {
         return id;
@@ -42,4 +44,5 @@ public class Movie {
     public String getBackdropPath() {
         return backdropPath;
     }
+    public String getRelease_date(){ return release_date; }
 }

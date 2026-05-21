@@ -16,13 +16,18 @@ import android.view.ViewGroup;
 
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.adapter.CarouselAdapter;
+import com.rupp.movieexplorer.adapter.MovieCardAdapter;
 import com.rupp.movieexplorer.api.MovieApi;
 import com.rupp.movieexplorer.api.RetrofitClient;
 import com.rupp.movieexplorer.model.Movie;
 import com.rupp.movieexplorer.model.MovieResponse;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,10 +49,22 @@ import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
+    private String apiKey = "9248253c09ac61d8b459b1b599ab133b";
     private ViewPager2 viewPager;
+    private RecyclerView PopularRecyclerView;
+    private RecyclerView NowPlayingRecyclerView;
+    private RecyclerView TopRatingRecyclerView;
+    private RecyclerView UpComingRecyclerView;
     private CarouselAdapter adapter;
+    private MovieCardAdapter PopularAdapter;
+    private MovieCardAdapter NowPlayingAdapter;
+    private MovieCardAdapter TopRatingAdapter;
+    private MovieCardAdapter UpComingAdapter;
     private List<Movie> Movies = new ArrayList<>(); // stored object's movies that each object contain title, overview, posterPath, voteAverage, backdropPath
-
+    private List<Movie> popularMovies = new ArrayList<>();
+    private List<Movie> nowPlayingMovies = new ArrayList<>();
+    private List<Movie> topRatedMovies = new ArrayList<>();
+    private List<Movie> upcomingMovies = new ArrayList<>();
     private Handler slideHandler = new Handler(Looper.getMainLooper());
 
     public HomeFragment() {
@@ -59,26 +76,137 @@ public class HomeFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.cardScollBar);
+
         viewPager = view.findViewById(R.id.viewPager);
-        adapter = new CarouselAdapter(Movies); // everything inside Movies arraylist that contain each different movie object will be passed to the adapter
+        PopularRecyclerView = view.findViewById(R.id.PopularCardScrollBar);
+        NowPlayingRecyclerView = view.findViewById(R.id.NowPlayingCardScrollBar);
+        TopRatingRecyclerView = view.findViewById(R.id.TopRatingCardScrollBar);
+        UpComingRecyclerView = view.findViewById(R.id.UpComingCardScrollBar);
+
+
+        adapter = new CarouselAdapter(Movies);// everything inside Movies arraylist that contain each different movie object will be passed to the adapter
+        PopularAdapter = new MovieCardAdapter(popularMovies);
+        NowPlayingAdapter = new MovieCardAdapter(nowPlayingMovies);
+        TopRatingAdapter = new MovieCardAdapter(topRatedMovies);
+        UpComingAdapter = new MovieCardAdapter(upcomingMovies);
+
         viewPager.setAdapter(adapter); // viewPager alone can't understand object of each movie directly so it need adapter to translate for it
+        PopularRecyclerView.setAdapter(PopularAdapter);
+        NowPlayingRecyclerView.setAdapter(NowPlayingAdapter);
+        TopRatingRecyclerView.setAdapter(TopRatingAdapter);
+        UpComingRecyclerView.setAdapter(UpComingAdapter);
+
         // so what adapter does is  //Movie object
         //     ↓
         //Convert to UI layout
         //     ↓
         //ImageView + TextView
+
+        PopularRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+        NowPlayingRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+        TopRatingRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+        UpComingRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+
+        fetchPopularMovies();
+        fetchNowPlayingMovies();
+        fetchTopRatingMovies();
+        fetchUpComingMovies();
         fetch5PopularMovies();
         AutoRunSlider();
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false)
-        );
+
         return view;
+    }
+
+    private void fetchPopularMovies() {
+        MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
+        Call<MovieResponse> call = api.getPopularMovies(apiKey);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> allMovies = response.body().getResults();
+                popularMovies.clear();
+                popularMovies.addAll(allMovies);
+                PopularAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+    }
+    private void fetchNowPlayingMovies() {
+        MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
+        Call<MovieResponse> call = api.getNowPlayingMovies(apiKey);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> allMovies = response.body().getResults();
+                nowPlayingMovies.clear();
+                nowPlayingMovies.addAll(allMovies);
+                NowPlayingAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+    }
+    private void fetchTopRatingMovies() {
+        MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
+        Call<MovieResponse> call = api.getTopRatedMovies(apiKey);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> allMovies = response.body().getResults();
+                topRatedMovies.clear();
+                topRatedMovies.addAll(allMovies);
+                TopRatingAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+    }
+
+
+    private void fetchUpComingMovies() {
+        MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
+        Call<MovieResponse> call = api.getUpcomingMovies(apiKey);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> allMovies = response.body().getResults();
+                String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                upcomingMovies.clear();
+                for(Movie movie : allMovies){
+                    if(movie.getRelease_date().compareTo(today) > 0){
+                        upcomingMovies.add(movie);
+                    }
+                }
+                UpComingAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.d("Error",t.getMessage());
+            }
+        });
     }
 
     private void fetch5PopularMovies() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class); // Create an API tool that can talk to TMDB
-        Call<MovieResponse> call = api.getAllMovies("9248253c09ac61d8b459b1b599ab133b", 1); // preparing the HTTP request
+        Call<MovieResponse> call = api.getAllMovies(apiKey, 1); // preparing the HTTP request
         call.enqueue(new Callback<MovieResponse>() { // Now the request is sent to the server
             // enqueue() means:
             //Run network in background
@@ -118,100 +246,19 @@ public class HomeFragment extends Fragment {
             slideHandler.postDelayed(this, 3000);
         }
     };
+
     @Override
     public void onPause() {
         super.onPause();
         slideHandler.removeCallbacks(sliderRunnable);
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        if(!Movies.isEmpty()){
+        if (!Movies.isEmpty()) {
             AutoRunSlider();
-        };
+        }
+        ;
     }
-
-
-//    private ViewPager2 viewPager;
-//    private CarouselAdapter adapter;
-//    private List<Movie> carouselMovies = new ArrayList<>();
-//    private Handler sliderHandler = new Handler(Looper.getMainLooper());
-//
-//    public HomeFragment() {
-//    }
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        viewPager = view.findViewById(R.id.viewPager);
-//
-//        adapter = new CarouselAdapter(carouselMovies);
-//        viewPager.setAdapter(adapter);
-//
-//        fetchCarouselMovies();
-//
-//        return view;
-//    }
-//
-//    private void fetchCarouselMovies() {
-//        MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
-//        Call<MovieResponse> call = api.getPopularMovies("9248253c09ac61d8b459b1b599ab133b");
-//
-//        call.enqueue(new Callback<MovieResponse>() {
-//            @Override
-//            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    List<Movie> allMovies = response.body().getResults();
-//                    carouselMovies.clear();
-//
-//                    // Get only the first 5 popular movies
-//                    for (int i = 0; i < Math.min(5, allMovies.size()); i++) {
-//                        carouselMovies.add(allMovies.get(i));
-//                    }
-//
-//                    adapter.notifyDataSetChanged();
-//                    startAutoSlider();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<MovieResponse> call, Throwable t) {
-//                Log.d("CAROUSEL_ERROR", t.getMessage());
-//            }
-//        });
-//    }
-//
-//    private void startAutoSlider() {
-//        sliderHandler.removeCallbacks(sliderRunnable); // prevent previous callbacks
-//        sliderHandler.postDelayed(sliderRunnable, 3000); // 3 seconds interval
-//    }
-//
-//    private Runnable sliderRunnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            int nextItem;
-//            if (viewPager != null && !carouselMovies.isEmpty()) {
-//                nextItem = viewPager.getCurrentItem() + 1;
-//                if(viewPager.getCurrentItem() == carouselMovies.size() - 1){
-//                    nextItem = 0;
-//                }
-//                viewPager.setCurrentItem(nextItem, true);
-//                sliderHandler.postDelayed(this, 3000);
-//            }
-//        }
-//    };
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        sliderHandler.removeCallbacks(sliderRunnable);
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (!carouselMovies.isEmpty()) {
-//            startAutoSlider();
-//        }
-//    }
 }
