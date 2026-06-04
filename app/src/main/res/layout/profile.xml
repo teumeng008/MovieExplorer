@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/buttonInvite"
+        android:layout_width="320dp"
+        android:layout_height="72dp"
+        android:text=""
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="510dp" />
+
+    <TextView
+        android:id="@+id/textInvite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Information"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="127dp"
+        tools:layout_editor_absoluteY="535dp" />
+
+    <ImageView
+        android:id="@+id/imageInvite"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/info"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="533dp" />
+
+    <ImageView
+        android:id="@+id/imageForwardInvite"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/forward"
+        tools:layout_editor_absoluteX="297dp"
+        tools:layout_editor_absoluteY="529dp" />
+
+    <Button
+        android:id="@+id/buttonLogout"
+        android:layout_width="320dp"
+        android:layout_height="72dp"
+        android:text=""
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="694dp" />
+
+    <ImageView
+        android:id="@+id/imageLogout"
+        android:layout_width="25dp"
+        android:layout_height="28dp"
+        app:srcCompat="@drawable/out"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="716dp" />
+
+    <ImageView
+        android:id="@+id/imageForwardLogout"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/forward"
+        tools:layout_editor_absoluteX="297dp"
+        tools:layout_editor_absoluteY="714dp" />
+
+    <TextView
+        android:id="@+id/textLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log Out"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="127dp"
+        tools:layout_editor_absoluteY="719dp" />
+
+    <Button
+        android:id="@+id/buttonHelp"
+        android:layout_width="320dp"
+        android:layout_height="72dp"
+        android:text=""
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="602dp" />
+
+    <TextView
+        android:id="@+id/textHelp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Help & Supports"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="127dp"
+        tools:layout_editor_absoluteY="627dp" />
+
+    <ImageView
+        android:id="@+id/imageHelp"
+        android:layout_width="27dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/help"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="623dp" />
+
+    <ImageView
+        android:id="@+id/imageForwardHelp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/forward"
+        tools:layout_editor_absoluteX="297dp"
+        tools:layout_editor_absoluteY="623dp" />
+
+    <Button
+        android:id="@+id/buttonNotification"
+        android:layout_width="320dp"
+        android:layout_height="72dp"
+        android:text=""
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="415dp" />
+
+    <Switch
+        android:id="@+id/switchNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notification                             "
+        android:textColor="#FFFDFD"
+        tools:layout_editor_absoluteX="127dp"
+        tools:layout_editor_absoluteY="438dp" />
+
+    <ImageView
+        android:id="@+id/imageNotification"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/noti"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="438dp" />
+
+    <ImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/pf"
+        tools:layout_editor_absoluteX="156dp"
+        tools:layout_editor_absoluteY="109dp" />
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Profile"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="159dp"
+        tools:layout_editor_absoluteY="54dp" />
+
+    <ImageView
+        android:id="@+id/imageBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="#CF55575D"
+        android:outlineAmbientShadowColor="@android:color/background_dark"
+        app:srcCompat="@drawable/backward"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageView
+        android:id="@+id/imageCamera"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/camera"
+        tools:layout_editor_absoluteX="215dp"
+        tools:layout_editor_absoluteY="180dp" />
+
+    <TextView
+        android:id="@+id/textName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="San Lenghor"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="150dp"
+        tools:layout_editor_absoluteY="230dp" />
+
+    <TextView
+        android:id="@+id/textUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@hor_cutie169"
+        android:textColor="#716A6A"
+        tools:layout_editor_absoluteX="156dp"
+        tools:layout_editor_absoluteY="265dp" />
+
+    <TextView
+        android:id="@+id/textEdit"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:text="Edit"
+        android:textColor="#716A6A"
+        android:textSize="12sp"
+        tools:layout_editor_absoluteX="339dp"
+        tools:layout_editor_absoluteY="117dp" />
+
+    <ImageView
+        android:id="@+id/imageEdit"
+        android:layout_width="30dp"
+        android:layout_height="34dp"
+        app:srcCompat="@drawable/edit"
+        tools:layout_editor_absoluteX="335dp"
+        tools:layout_editor_absoluteY="83dp" />
+
+    <Button
+        android:id="@+id/buttonDarkMode"
+        android:layout_width="320dp"
+        android:layout_height="72dp"
+        android:text=""
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="322dp" />
+
+    <ImageView
+        android:id="@+id/imageMode"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        app:srcCompat="@drawable/mode"
+        tools:layout_editor_absoluteX="68dp"
+        tools:layout_editor_absoluteY="340dp" />
+
+    <Switch
+        android:id="@+id/switchDarkMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Switch to dark mode            "
+        android:textColor="#FFFDFD"
+        tools:layout_editor_absoluteX="127dp"
+        tools:layout_editor_absoluteY="345dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
