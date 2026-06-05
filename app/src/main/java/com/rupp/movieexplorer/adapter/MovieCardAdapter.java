@@ -10,18 +10,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rupp.movieexplorer.R;
+import com.rupp.movieexplorer.model.MediaItem;
 import com.rupp.movieexplorer.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.ViewHolder> {
-    List<Movie> movieList = new ArrayList<>();
+     private List<Movie> movieList = new ArrayList<>();
+     private OnMovieClickListener movieClickListener;
+
+    public interface OnMovieClickListener {
+        void  onMovieClick(Movie movie);
+    }
     //Constructor
-    public MovieCardAdapter(List<Movie> movieList){
+    public MovieCardAdapter(List<Movie> movieList, OnMovieClickListener movieClickListener){
         this.movieList = movieList;
+        this.movieClickListener = movieClickListener;
     }
 
     @NonNull
@@ -37,12 +47,25 @@ public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.View
         String imageURL = "https://image.tmdb.org/t/p/w200" + movie.getPosterPath();
         Picasso.get()
                 .load(imageURL)
-                .placeholder(R.drawable.movie_list)
-                .error(R.drawable.movie_list)
+                .error(R.drawable.coming_soon)
                 .into(holder.poster);
-        holder.date.setText(movie.getRelease_date());
+        String date = movie.getRelease_date();
+        try{
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM yyyy",Locale.getDefault());
+            Date parseDate = inputFormat.parse(date);
+            holder.date.setText(outputFormat.format(parseDate));
+        }catch (Exception e){
+            holder.date.setText(date);
+        }
         holder.movie_name.setText(movie.getTitle());
-        holder.rating.setText("⭐ " + movie.getVoteAverage());
+        holder.rating.setText("⭐ " +String.format(Locale.getDefault(),"%.2f", movie.getVoteAverage()));
+
+        holder.itemView.setOnClickListener(v ->{
+            if(movieClickListener != null){
+                movieClickListener.onMovieClick(movie);
+            }
+        });
     }
 
     @Override

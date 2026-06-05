@@ -8,12 +8,6 @@
         android:id="@+id/menu_movie"
         android:title="Discover"
         android:icon="@drawable/movie_list"/>
-
-    <item
-        android:id="@+id/menu_favorites"
-        android:title="Favorites"
-        android:icon="@drawable/favorite"/>
-
     <item
         android:id="@+id/menu_watchlist"
         android:title="Watchlist"

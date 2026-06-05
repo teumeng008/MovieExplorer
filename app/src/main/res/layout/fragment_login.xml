@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="380dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:background="@drawable/fake_blur_bg"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:context=".fragments.LoginFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:fontFamily="sans-serif-black"
+                android:text="Login"
+                android:textAllCaps="false"
+                android:textColor="@color/gray"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="15dp"
+                android:textColorHint="@color/light_gray"
+                app:boxStrokeColor="@color/card_bg"
+                app:hintTextColor="@color/light_gray">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/loginEmailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Email"
+                    android:textColor="@color/card_bg" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/loginPasswordLayout"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="15dp"
+                android:textColorHint="@color/light_gray"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/card_bg"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/light_gray"
+                app:hintTextColor="@color/light_gray">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/loginPasswordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="Password"
+                    android:inputType="text|textPassword"
+                    android:textColor="@color/card_bg" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/rounded_bg"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:text="login"
+                android:textColor="@color/card_bg"
+                android:textSize="16sp"
+                app:backgroundTint="@color/card_text" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Don't have an account? "
+                    android:textColor="@color/light_gray" />
+
+                <TextView
+                    android:id="@+id/SignInText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Sign Up"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/card_bg"
+                    android:textSize="12sp"
+                    android:textStyle="bold|italic"
+                    android:typeface="sans" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/loading_overlay2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/black_overlay"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/loading_progress2"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/card_bg"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:progressTint="@color/card_bg"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>

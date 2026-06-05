@@ -1,7 +1,14 @@
 package com.rupp.movieexplorer.api;
 
+import com.rupp.movieexplorer.model.MediaItem;
 import com.rupp.movieexplorer.model.Movie;
 import com.rupp.movieexplorer.model.MovieResponse;
+import com.rupp.movieexplorer.model.MultiResponse;
+import com.rupp.movieexplorer.model.People;
+import com.rupp.movieexplorer.model.TVResponse;
+import com.rupp.movieexplorer.model.TVShow;
+
+import org.checkerframework.common.reflection.qual.GetClass;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -49,8 +56,15 @@ public interface MovieApi {
      */
     @GET("movie/{movie_id}")
     Call<Movie> getMovieDetails(
-            @Query("api_key") String apiKey,
-            @Path("movie_id") int id
+            @Path("movie_id") int id,
+            @Query("api_key") String apiKey
+
+    );
+
+    @GET("tv/{tv_show_id}")
+    Call<TVShow> getTvShowDetails(
+            @Path("tv_show_id") int id,
+            @Query("api_key") String apikey
     );
 
     /**
@@ -64,4 +78,30 @@ public interface MovieApi {
             @Query("api_key") String apiKey,
             @Query("page") int page
     );
+    @GET("discover/movie")
+    Call<MovieResponse> getUpcomingKHMovies(
+            @Query("api_key") String apiKey,
+            @Query("region") String region,
+            @Query("sort_by") String sortBy,
+            @Query("primary_release_date.gte") String date
+    );
+    @GET("search/multi")
+    Call<MultiResponse> searchMovieAndTVShow(
+            @Query("api_key") String apiKey,
+            @Query("query") String mediaQuery
+    );
+
+    @GET("movie/{movie_id}/credits")
+    Call<MediaItem> getPeople(
+            @Path("movie_id") int id,
+            @Query("api_key") String apiKey
+
+    );
+
+    @GET("tv/{tv_id}/credits")
+    Call<MediaItem> getTvPeople(
+            @Path("tv_id") int id,
+            @Query("api_key") String apiKey
+    );
+
 }

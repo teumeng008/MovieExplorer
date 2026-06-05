@@ -22,11 +22,12 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     // 🔥 Two types of items
     private static final int VIEW_TYPE_MOVIE = 0;
     private static final int VIEW_TYPE_PAGINATION = 1;
-
+    private MovieCardAdapter.OnMovieClickListener onMovieClickListener;
     List<Movie> movieList;
     int currentPage = 1;
 
-    public MovieAdapter(List<Movie> movieList) {
+    public MovieAdapter(List<Movie> movieList, MovieCardAdapter.OnMovieClickListener onMovieClickListener) {
+        this.onMovieClickListener = onMovieClickListener;
         this.movieList = movieList;
     }
 
@@ -81,14 +82,18 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             MovieViewHolder h = (MovieViewHolder) holder;
             h.title.setText(movie.getTitle());
-            h.rating.setText("⭐ " + movie.getVoteAverage());
+            h.rating.setText("⭐ " + String.format("%.2f", movie.getVoteAverage()));
 
             String imageUrl = "https://image.tmdb.org/t/p/w500" + movie.getPosterPath();
 
             Picasso.get()
                     .load(imageUrl)
                     .into(h.poster);
-
+            holder.itemView.setOnClickListener(v ->{
+                if(onMovieClickListener != null){
+                    onMovieClickListener.onMovieClick(movie);
+                }
+            });
         }
         // 👉 If it's pagination item
         else if (holder instanceof PaginationViewHolder) {

@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         Fragment selectedFragment = null;
         if(item.getItemId() == R.id.menu_home) {
             selectedFragment = homeFragment;
-        }else if(item.getItemId() == R.id.menu_favorites){
-            selectedFragment = favoritesFragment;
         }else if(item.getItemId() == R.id.menu_watchlist) {
             selectedFragment = watchlistFragment;
         }else if(item.getItemId() == R.id.menu_profile) {

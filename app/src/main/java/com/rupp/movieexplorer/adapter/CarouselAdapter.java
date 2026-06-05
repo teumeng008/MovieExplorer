@@ -19,9 +19,10 @@ public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.Carous
 // ViewPager2 internally uses RecyclerView
 //so it need to use 3 function onCreateViewHolder, onBindViewHolder, getItemCount
     private final List<Movie> movieList;
-
-    public CarouselAdapter(List<Movie> movieList) {  // getting all movies array object
+    private MovieCardAdapter.OnMovieClickListener onMovieClickListener;
+    public CarouselAdapter(List<Movie> movieList, MovieCardAdapter.OnMovieClickListener onMovieClickListener) {  // getting all movies array object
         this.movieList = movieList;
+        this.onMovieClickListener = onMovieClickListener;
     }
 
     @NonNull
@@ -43,8 +44,12 @@ public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.Carous
 
         Picasso.get()
                 .load(imageUrl)
-                .placeholder(R.drawable.movie_list) // Use an existing drawable as placeholder
                 .into(holder.image); // set that imageUrl to holder.image
+        holder.itemView.setOnClickListener(v->{
+            if(onMovieClickListener != null){
+                onMovieClickListener.onMovieClick(movie);
+            }
+        });
     }
 
     @Override
