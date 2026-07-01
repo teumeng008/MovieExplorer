@@ -22,7 +22,7 @@ import java.util.Locale;
 
 
 public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.ViewHolder> {
-     private List<Movie> movieList = new ArrayList<>();
+     private List<Movie> movieList;
      private OnMovieClickListener movieClickListener;
 
     public interface OnMovieClickListener {

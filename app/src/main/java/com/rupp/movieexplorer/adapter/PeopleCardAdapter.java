@@ -36,6 +36,11 @@ public class PeopleCardAdapter extends RecyclerView.Adapter<PeopleCardAdapter.Vi
          String imageURL ="https://image.tmdb.org/t/p/w500"+ people.getProfile_image();
         Picasso.get().load(imageURL).placeholder(R.drawable.user_icon).into(holder.imageView);
         holder.textView.setText(people.getName());
+        if(people.getCharacter() != null){
+            holder.Character.setText(people.getCharacter());
+            holder.PlayAsLabel.setVisibility(View.VISIBLE);
+            holder.Character.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -45,11 +50,14 @@ public class PeopleCardAdapter extends RecyclerView.Adapter<PeopleCardAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
-        TextView textView;
+        TextView textView,PlayAsLabel,Character;
+
        public ViewHolder(View view){
             super(view);
             imageView = view.findViewById(R.id.peopleImage);
             textView = view.findViewById(R.id.peopleName);
+            PlayAsLabel = view.findViewById(R.id.textPlayAs);
+            Character = view.findViewById(R.id.textCharactor);
         }
     }
 }

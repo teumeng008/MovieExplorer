@@ -42,17 +42,17 @@ import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-    private ImageButton backBtn, favBtn;
-    private ImageView poster;
+    private ImageButton backBtn, favBtn, watchlistBtn;
+    private ImageView poster,TypeIcon;
     private TextView nameDetail, rating, mediaType, releaseDate, spokenLang, duration, overview,DirectorLabel,genres;
 
-    private RecyclerView castRecyclerView, crewRecyclerView, seasonRecycle;
+    private RecyclerView castRecyclerView, crewRecyclerView, seasonRecycle, castRecyclerViewLoading, crewRecyclerViewLoading,seasonRecycleLoading;
     private PeopleCardAdapter castAdapter, crewAdapter;
     private SeasonCardAdapter seasonAdapter;
     private List<People> castList = new ArrayList<>();
     private List<People> crewList = new ArrayList<>();
     private List<Season> seasons = new ArrayList<>();
-    private LinearLayout SeasonLayout;
+    private LinearLayout SeasonLayout, SeasonLayoutLoading;
     private View loadingLayout;
     private View mainLayout;
 
@@ -60,6 +60,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private String currentPosterPath;
     private double currentRating;
     private Boolean isFavorite = false;
+    private Boolean isWatchList = false;
 
     private int id;
     private String type; // "movie" or "tv"
@@ -76,7 +77,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         bindViews();
         setupRecyclerViews();
-        checkFavoriteState();
+        checkState();
         setupButtons();
 
         fetchCredits(id);
@@ -86,16 +87,19 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void bindViews() {
         backBtn = findViewById(R.id.backBtn);
         favBtn = findViewById(R.id.favBtn);
+        watchlistBtn = findViewById(R.id.WatchListBtn);
         poster = findViewById(R.id.imagePosterDetail);
         nameDetail = findViewById(R.id.nameDetail);
         rating = findViewById(R.id.textRatingDetail);
         mediaType = findViewById(R.id.textTypeDetail);
+        TypeIcon = findViewById(R.id.TvOrMovieIcon);
         releaseDate = findViewById(R.id.textDateDetail);
         spokenLang = findViewById(R.id.textLanguageDetail);
         duration = findViewById(R.id.textDuration);
         overview = findViewById(R.id.textOverview);
         DirectorLabel = findViewById(R.id.DirectorORCreatorLabel);
         SeasonLayout = findViewById(R.id.SeasonLayout);
+        SeasonLayoutLoading = findViewById(R.id.SeasonLayoutLoading);
         genres = findViewById(R.id.textGenresDetail);
         loadingLayout = findViewById(R.id.loadingLayout);
         mainLayout = findViewById(R.id.mainContent);
@@ -104,28 +108,36 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void setupRecyclerViews() {
         castRecyclerView = findViewById(R.id.castLayout);
+        castRecyclerViewLoading = findViewById(R.id.castLayoutLoading);
+
         crewRecyclerView = findViewById(R.id.directorLayout);
+        crewRecyclerViewLoading = findViewById(R.id.directorLayoutLoading);
+
         seasonRecycle = findViewById(R.id.SeasonRecycler);
+        seasonRecycleLoading = findViewById(R.id.SeasonRecyclerLoading);
 
         castAdapter = new PeopleCardAdapter(castList);
         crewAdapter = new PeopleCardAdapter(crewList);
         seasonAdapter = new SeasonCardAdapter(seasons);
 
-        castRecyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        );
-
-        crewRecyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        );
+        castRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        crewRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         seasonRecycle.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
 
-        castRecyclerView.setAdapter(new LoadingPeopleCardAdapter());
-        crewRecyclerView.setAdapter(new LoadingPeopleCardAdapter());
-        seasonRecycle.setAdapter(new LoadingSeasonCardAdapter());
+        castRecyclerViewLoading.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        crewRecyclerViewLoading.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        seasonRecycleLoading.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+
+        castRecyclerView.setAdapter(castAdapter);
+        crewRecyclerView.setAdapter(crewAdapter);
+        seasonRecycle.setAdapter(seasonAdapter);
+
+        castRecyclerViewLoading.setAdapter(new LoadingPeopleCardAdapter());
+        crewRecyclerViewLoading.setAdapter(new LoadingPeopleCardAdapter());
+        seasonRecycleLoading.setAdapter(new LoadingSeasonCardAdapter());
     }
 
-    private void checkFavoriteState(){
+    private void checkState(){
         String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("favorites").document(String.valueOf(id)).get().addOnSuccessListener(documentSnapshot->{
             isFavorite = documentSnapshot.exists();
@@ -135,6 +147,16 @@ public class MovieDetailActivity extends AppCompatActivity {
                 favBtn.setImageResource(R.drawable.favorite);
             }
         });
+        FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("watchlist").document(String.valueOf(id)).get().addOnSuccessListener(documentSnapshot -> {
+           isWatchList = documentSnapshot.exists();
+            if(isWatchList){
+                watchlistBtn.setImageResource(R.drawable.watchlist_filled);
+            }else {
+                watchlistBtn.setImageResource(R.drawable.watchlist);
+            }
+        });
+
+
     }
 
     private void setupButtons() {
@@ -143,6 +165,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         favBtn.setOnClickListener(v ->
             toggleFavorite()
         );
+        watchlistBtn.setOnClickListener(v->{
+            toggleWatchlist();
+        });
     }
 
     private void toggleFavorite(){
@@ -156,6 +181,17 @@ public class MovieDetailActivity extends AppCompatActivity {
             favBtn.setImageResource(R.drawable.heart_filled);
         }
 
+    }
+    private void toggleWatchlist(){
+        if(isWatchList){
+            removeWatchlist();
+            isWatchList = false;
+            watchlistBtn.setImageResource(R.drawable.watchlist);
+        }else {
+            addWatchlist();
+            isWatchList = true;
+            watchlistBtn.setImageResource(R.drawable.watchlist_filled);
+        }
     }
 
     private void addFavorite(){
@@ -171,6 +207,19 @@ public class MovieDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT).show();
         });
     }
+    private void addWatchlist(){
+        String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FavoriteItem watchlistItem = new FavoriteItem(id,type,currentTitle,currentPosterPath,currentRating);
+        FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("watchlist").document(String.valueOf(id)).set(watchlistItem).addOnSuccessListener( unused -> {
+            Toast.makeText(this,"Added to Watchlist",Toast.LENGTH_SHORT).show();
+        });
+    }
+    private void removeWatchlist(){
+        String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("watchlist").document(String.valueOf(id)).delete().addOnSuccessListener( unused -> {
+            Toast.makeText(this,"Removed from Watchlist",Toast.LENGTH_SHORT).show();
+        });
+    }
 
     private void ShowLoading(Boolean isLoading){
         loadingLayout.setVisibility(isLoading ? View.VISIBLE : View.GONE);
@@ -183,6 +232,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if ("tv".equals(type)) {
             SeasonLayout.setVisibility(View.VISIBLE);
+            SeasonLayoutLoading.setVisibility(View.VISIBLE);
+            TypeIcon.setImageResource(R.drawable.tv_show_icon);
 
             Call<TVShow> call = api.getTvShowDetails(id, Constants.API_KEY);
 
@@ -197,8 +248,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     currentTitle = result.getName();
                     currentPosterPath = result.getPosterPath();
                     currentRating = result.getVoteAverage();
-
-                    seasonRecycle.setAdapter(seasonAdapter);
 
                     nameDetail.setText(result.getName());
                     rating.setText(String.format("%.2f", result.getVoteAverage()));
@@ -216,7 +265,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                     releaseDate.setText(result.getFirstAirDate());
                     overview.setText(result.getOverview());
                     duration.setText(result.getNumber_of_seasons() + " Seasons");
-                    seasons.addAll(result.getSeasons());
+                    seasons.clear();
+                    if (result.getSeasons() != null) {
+                        seasons.addAll(result.getSeasons());
+                    }
                     seasonAdapter.notifyDataSetChanged();
 
 
@@ -244,6 +296,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         } else {
             Call<Movie> call = api.getMovieDetails(id, Constants.API_KEY);
+            TypeIcon.setImageResource(R.drawable.movie_icon);
 
             call.enqueue(new Callback<Movie>() {
                 @Override

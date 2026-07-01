@@ -1,6 +1,8 @@
 package com.rupp.movieexplorer;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +17,11 @@ import com.rupp.movieexplorer.fragments.HomeFragment;
 import com.rupp.movieexplorer.fragments.MovieListFragment;
 import com.rupp.movieexplorer.fragments.ProfileFragment;
 import com.rupp.movieexplorer.fragments.WatchlistFragment;
+import android.graphics.Rect;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
 
 public class MainActivity extends AppCompatActivity {
     private Fragment homeFragment = new HomeFragment();
@@ -50,5 +57,28 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
         return true;
         });
-        }
     }
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        View view = getCurrentFocus();
+
+        if (view instanceof EditText) {
+
+            Rect outRect = new Rect();
+            view.getGlobalVisibleRect(outRect);
+
+            if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+
+                view.clearFocus();
+
+                InputMethodManager imm =
+                        (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+
+        return super.dispatchTouchEvent(ev);
+    }
+}

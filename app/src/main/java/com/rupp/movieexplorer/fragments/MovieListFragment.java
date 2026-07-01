@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -54,11 +55,17 @@ public class MovieListFragment extends Fragment {
     RecyclerView suggestion_view;
     SuggestionAdapter suggestionAdapter;
 
+    private Handler searchHandler;
+    private Runnable searchRunnable;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+
+        searchHandler = new Handler();
 
         recyclerView = view.findViewById(R.id.moviesRecycler);
 
@@ -113,27 +120,42 @@ public class MovieListFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String query = charSequence.toString();
-                if(charSequence.length() > 2){
-                    suggestion_view.setAdapter(new LoadingAdapter());
-                    search_movie(query);
-                    suggestion_view.setVisibility(View.VISIBLE);
-                    suggestion_view.setAlpha(0f);
-                    suggestion_view.setTranslationY(-20f);
-
-                    suggestion_view.animate()
-                            .alpha(1f)
-                            .translationY(0f)
-                            .setDuration(200)
-                            .start();
-                }else {
-                    suggestion_view.animate()
-                            .alpha(0f)
-                            .translationY(-20f)
-                            .setDuration(150)
-                            .withEndAction(() -> suggestion_view.setVisibility(View.GONE))
-                            .start();
+                //if the text still add or still typing, it will the restart cooldown by | but if wait enough like 400 millis later it will execute the searchRunnable
+                String query = charSequence.toString().trim();//                         |
+                if(searchRunnable != null){//                                            |
+                    searchHandler.removeCallbacks(searchRunnable);//   <---------------- |
                 }
+
+                if(charSequence.length() < 2) {
+                    suggestion_view.setVisibility(View.GONE);
+                    return;
+                }
+
+                    searchRunnable = () ->{
+                        suggestion_view.setAdapter(new LoadingAdapter());
+                        search_movie(query);
+
+                        suggestion_view.setVisibility(View.VISIBLE);
+                        suggestion_view.setAlpha(0f);
+                        suggestion_view.setTranslationY(-20f);
+
+                        suggestion_view.animate()
+                                .alpha(1f)
+                                .translationY(0f)
+                                .setDuration(200)
+                                .start();
+                    };
+                searchHandler.postDelayed(searchRunnable,400);
+
+
+//                }else {
+//                    suggestion_view.animate()
+//                            .alpha(0f)
+//                            .translationY(-20f)
+//                            .setDuration(150)
+//                            .withEndAction(() -> suggestion_view.setVisibility(View.GONE))
+//                            .start();
+//                }
             }
         });
 

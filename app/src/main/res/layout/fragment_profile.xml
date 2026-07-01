@@ -4,25 +4,342 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/component_bg"
     tools:context=".fragments.ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/LogOutBtn"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/component_bg"
-            android:text="Log Out"
-            android:textColor="@color/design_default_color_error"
-            app:backgroundTint="@color/card_bg" />
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|end"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/EditProfileBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Profile"
+                android:textAllCaps="false"
+                android:textColor="@color/card_bg"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <ImageView
+                    android:id="@+id/imageProfile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:srcCompat="@drawable/pf" />
+
+                <ImageView
+                    android:id="@+id/imageCameraEditBtn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom|end"
+                    android:background="@android:color/background_light"
+                    android:backgroundTint="@android:color/transparent"
+                    app:srcCompat="@drawable/camera" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Username"
+                android:textColor="@color/card_bg"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\@username"
+                android:textColor="@color/light_gray" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/bg_component"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:id="@+id/ivNotification"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:tint="@color/card_bg"
+                    app:srcCompat="@drawable/noti" />
+
+                <Switch
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="4"
+                    android:showText="false"
+                    android:text="Notification"
+                    android:textColor="@color/card_bg"
+                    android:trackTint="@color/light_gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/bg_component"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:tint="@color/card_bg"
+                    app:srcCompat="@drawable/change_password" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="4"
+                    android:gravity="center_vertical|end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Change password"
+                        android:textColor="@color/card_bg" />
+
+                    <ImageButton
+                        android:id="@+id/ChangePwBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/forward" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/bg_component"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:id="@+id/ivLogout"
+                    android:layout_width="10dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:tint="@color/card_bg"
+                    app:srcCompat="@drawable/out" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="4"
+                    android:gravity="center_vertical|end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Log out"
+                        android:textColor="@color/card_bg" />
+
+                    <ImageButton
+                        android:id="@+id/LogOutBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/forward" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="@color/bg_component"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:tint="@color/card_bg"
+                    app:srcCompat="@drawable/delete_acc" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="4"
+                    android:gravity="center_vertical|end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Delete Account"
+                        android:textColor="#F40505"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/DeleteAccBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/forward" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
+
+    <LinearLayout
+        android:id="@+id/DeleteAccPromph"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_overlay"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/fake_blur_bg"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="Delete your account?"
+                android:textAlignment="center"
+                android:textColor="#1A1A1A"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="sans-serif"
+                android:text="This action is permanent and cannot be undone. All your data will be lost."
+                android:textAlignment="center"
+                android:textColor="#6C757D"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/CancelDeleteBtn"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:text="Cancel"
+                    android:textColor="#212529"
+                    app:strokeColor="#E3E9EF" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/DeleteAccBtnFinal"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:text="Delete"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#DC3545" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LogOutPromph"

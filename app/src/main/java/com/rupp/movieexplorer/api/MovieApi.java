@@ -104,4 +104,24 @@ public interface MovieApi {
             @Query("api_key") String apiKey
     );
 
+    @GET("tv/popular")
+    Call<TVResponse> getPopularTVShows(
+            @Query("api_key") String apiKey
+    );
+
+    @GET("tv/top_rated")
+    Call<TVResponse> getTopRatedTVShows(
+            @Query("api_key") String apiKey
+    );
+
+    @GET("tv/on_the_air")
+    Call<TVResponse> getOnTheAirTVShows(
+            @Query("api_key") String apiKey
+    );
+
+    @GET("tv/airing_today")
+    Call<TVResponse> getAiringTodayTVShows(
+            @Query("api_key") String apiKey
+    );
+
 }
