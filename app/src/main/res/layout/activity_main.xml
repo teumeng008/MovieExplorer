@@ -37,13 +37,12 @@
             android:layout_alignParentBottom="true"
             android:layout_marginTop="0dp"
             android:background="@drawable/component_bg"
-            android:theme="@style/ThemeOverlay.App.BottomNavigationView"
+            android:theme="@style/Theme.MovieExplorer"
             app:backgroundTint="@color/card_text"
             app:elevation="20dp"
             app:itemIconTint="@color/gray"
             app:itemTextColor="@color/gray"
             app:labelVisibilityMode="auto"
-            app:menu="@menu/bottom_nav_bar"
-            tools:layout_marginBottom="16dp" />
+            app:menu="@menu/bottom_nav_bar" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

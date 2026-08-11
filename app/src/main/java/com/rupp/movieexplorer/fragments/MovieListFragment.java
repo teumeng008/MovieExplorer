@@ -3,36 +3,33 @@ package com.rupp.movieexplorer.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.rupp.movieexplorer.Constants;
 import com.rupp.movieexplorer.MovieDetailActivity;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.adapter.LoadingAdapter;
-import com.rupp.movieexplorer.adapter.MovieAdapter;
-import com.rupp.movieexplorer.adapter.SuggestionAdapter;
+import com.rupp.movieexplorer.adapter.MediaAdapter;
 import com.rupp.movieexplorer.api.MovieApi;
 import com.rupp.movieexplorer.api.RetrofitClient;
 import com.rupp.movieexplorer.model.MediaItem;
 import com.rupp.movieexplorer.model.Movie;
 import com.rupp.movieexplorer.model.MovieResponse;
-import com.rupp.movieexplorer.model.MultiResponse;
+import com.rupp.movieexplorer.viewModel.FilterViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import me.xdrop.fuzzywuzzy.FuzzySearch;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Callback;
@@ -46,38 +43,36 @@ public class MovieListFragment extends Fragment {
 
     }
 
+    private FilterViewModel filterViewModel;
+
     RecyclerView recyclerView;
-    MovieAdapter adapter;
-    List<Movie> movieList = new ArrayList<>();
+    MediaAdapter adapter;
+    List<MediaItem> movieList = new ArrayList<>();
     List<MediaItem> suggestList = new ArrayList<>();
     int currentPage = 1;
-    TextInputEditText search_text;
-    RecyclerView suggestion_view;
-    SuggestionAdapter suggestionAdapter;
-
-    private Handler searchHandler;
-    private Runnable searchRunnable;
+    String  genres;
+    Integer year;
+    Double  rating;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_movies_list, container, false);
 
-        searchHandler = new Handler();
 
         recyclerView = view.findViewById(R.id.moviesRecycler);
 
         // Setup RecyclerView with a linear layout manager and our custom adapter
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new MovieAdapter(movieList, movie ->{
-            openMovieDetail(movie);
+        adapter = new MediaAdapter(movieList, movie ->{
+            openMovieDetail((Movie) movie);
         });
         recyclerView.setAdapter(new LoadingAdapter());
 
-        adapter.setPaginationListener(new MovieAdapter.PaginationListener() {
+        adapter.setPaginationListener(new MediaAdapter.PaginationListener() {
             @Override
             public void onNextPage() {
                 currentPage++;
@@ -98,69 +93,24 @@ public class MovieListFragment extends Fragment {
             }
         });
 
-        search_text = view.findViewById(R.id.search_text);
-        suggestion_view = view.findViewById(R.id.suggestion_view);
-        suggestionAdapter = new SuggestionAdapter(suggestList,item ->{
-            openDetail(item);
-        });
-        suggestion_view.setLayoutManager(new LinearLayoutManager(getContext()));
-        suggestion_view.setAdapter(suggestionAdapter);
-        suggestion_view.setVisibility(View.GONE);
 
-        search_text.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //if the text still add or still typing, it will the restart cooldown by | but if wait enough like 400 millis later it will execute the searchRunnable
-                String query = charSequence.toString().trim();//                         |
-                if(searchRunnable != null){//                                            |
-                    searchHandler.removeCallbacks(searchRunnable);//   <---------------- |
-                }
-
-                if(charSequence.length() < 2) {
-                    suggestion_view.setVisibility(View.GONE);
-                    return;
-                }
-
-                    searchRunnable = () ->{
-                        suggestion_view.setAdapter(new LoadingAdapter());
-                        search_movie(query);
-
-                        suggestion_view.setVisibility(View.VISIBLE);
-                        suggestion_view.setAlpha(0f);
-                        suggestion_view.setTranslationY(-20f);
-
-                        suggestion_view.animate()
-                                .alpha(1f)
-                                .translationY(0f)
-                                .setDuration(200)
-                                .start();
-                    };
-                searchHandler.postDelayed(searchRunnable,400);
-
-
-//                }else {
-//                    suggestion_view.animate()
-//                            .alpha(0f)
-//                            .translationY(-20f)
-//                            .setDuration(150)
-//                            .withEndAction(() -> suggestion_view.setVisibility(View.GONE))
-//                            .start();
-//                }
-            }
-        });
 
         fetchMovies();
+
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+        filterViewModel = new ViewModelProvider(requireActivity()).get(FilterViewModel.class);
+
+        filterViewModel.getMovieFilters().observe(getViewLifecycleOwner(), filterData -> {
+            if(filterData != null){
+                updateFilters(filterData.getGenres(), filterData.getYear(), filterData.getRating());
+            }
+        });
     }
 
     @Override
@@ -170,14 +120,38 @@ public class MovieListFragment extends Fragment {
         adapter.setCurrentPage(currentPage);
     }
 
+    /**
+     * Updates the filtering criteria and refreshes the movie list from the first page.
+     *
+     * STEP 5: State Update (MovieListFragment)
+     * The fragment receives the new parameters, updates its local variables,
+     * and resets the current page to 1.
+     */
+    public void updateFilters(String genres, Integer year, Double rating) {
+        this.genres = genres;
+        this.year = year;
+        this.rating = rating;
+        this.currentPage = 1; // Always reset to page 1 when applying new filters
 
+        if (adapter != null) {
+            adapter.setCurrentPage(currentPage);
+        }
+
+        // STEP 6: Feedback (MovieListFragment)
+        // Show loading state while fetching new filtered results
+        recyclerView.setAdapter(new LoadingAdapter());
+
+        // STEP 7: Network Request (MovieListFragment)
+        // Triggers the Retrofit call with the updated parameters.
+        fetchMovies();
+    }
 
     private void fetchMovies() {
         // Create an instance of the API interface using our Retrofit client
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
         // Prepare the popular movies API call
-        Call<MovieResponse> call = api.getAllMovies("9248253c09ac61d8b459b1b599ab133b", currentPage);
+        Call<MovieResponse> call = api.getAllMovies(Constants.API_KEY, currentPage, genres, year, rating);
 
         // Execute the call asynchronously
         call.enqueue(new Callback<MovieResponse>() {
@@ -202,55 +176,6 @@ public class MovieListFragment extends Fragment {
                 Log.d("API_ERROR", t.getMessage());
             }
         });
-    }
-
-    private void search_movie(String query){
-        MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
-        Call<MultiResponse> call = api.searchMovieAndTVShow("9248253c09ac61d8b459b1b599ab133b",query);
-        call.enqueue(new Callback<MultiResponse>() {
-            @Override
-            public void onResponse(Call<MultiResponse> call, Response<MultiResponse> response) {
-                List<MediaItem> allItem = response.body().getResults();
-                List<MediaItem> SelectedItem = new ArrayList<>();
-                // clean query
-                for(MediaItem i : allItem ){
-                    if("person".equals(i.getMediaType())){
-                        continue;
-                    }
-                    String searchText = i.getTitle() + " " +i.getOverview()+" "+i.getMediaType();
-                    int similarity = FuzzySearch.tokenSetRatio(searchText.toLowerCase(),query.toLowerCase());
-
-                    double textScore = similarity / 100.0;
-                    double popularityScore = Math.log(i.getPopularity()+ 1 ) / 10.0;
-                    double ratingScore = i.getVoteAverage() / 10.0;
-                    //item score (the higher it got the more priority it gets)
-                    double itemScore = (textScore * 0.6) + (popularityScore * 0.2) + (ratingScore * 0.2);
-                    i.setItemScore(itemScore);
-                    SelectedItem.add(i);
-                }
-                //sort from the highest score to less
-                Collections.sort(SelectedItem,(a,b)->
-                        Double.compare(b.getItemScore(), a.getItemScore())
-                );
-                suggestion_view.setAdapter(suggestionAdapter);
-                suggestList.clear();
-                suggestList.addAll(SelectedItem);
-                suggestionAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<MultiResponse> call, Throwable t) {
-                Log.d("Error",t.getMessage());
-            }
-        });
-    }
-    private void openDetail(MediaItem item){
-        Intent intent = new Intent(requireContext(),MovieDetailActivity.class);
-
-        intent.putExtra("id", item.getId());
-        intent.putExtra("type",item.getMediaType());
-
-        startActivity(intent);
     }
     private void openMovieDetail(Movie movie){
         Intent intent = new Intent(requireContext(),MovieDetailActivity.class);

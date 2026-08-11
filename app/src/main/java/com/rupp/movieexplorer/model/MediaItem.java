@@ -18,6 +18,9 @@ public class MediaItem {
     @SerializedName("vote_average")
     private double voteAverage;
 
+    @SerializedName("genre_ids")
+    private List<Integer> genre_ids;
+
     @SerializedName("poster_path")
     private String posterPath;
 
@@ -32,6 +35,12 @@ public class MediaItem {
 
     @SerializedName("first_air_date")
     private String firstAirDate;
+
+    @SerializedName("backdrop_path")
+    private String backdropPath;
+
+    @SerializedName("genres")
+    private List<Genres> genres;
 
     @SerializedName("popularity")
     private double popularity;
@@ -59,6 +68,27 @@ public class MediaItem {
     public String getPosterPath() { return posterPath; }
     public String getOverview() { return overview; }
     public String getMediaType() { return mediaType; }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public List<Genres> getGenres() {
+        return genres;
+    }
+
+    public List<lang> getSpoken_languages() {
+        return spoken_languages;
+    }
+
+    public String getFirstAirDate() {
+        return firstAirDate;
+    }
+
     public String getReleaseDate() {
         return releaseDate != null ? releaseDate : firstAirDate;
     }
@@ -89,5 +119,9 @@ public class MediaItem {
 
     public List<Creator> getCreator() {
         return creator;
+    }
+
+    public List<Integer> getGenre_ids() {
+        return genre_ids;
     }
 }

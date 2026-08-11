@@ -18,6 +18,9 @@ public class Season {
     @SerializedName("vote_average")
     private  double vote_average;
 
+    @SerializedName("season_number")
+    private int season_number;
+
     @SerializedName("poster_path")
     private String poster_path;
 
@@ -47,5 +50,9 @@ public class Season {
 
     public String getPoster_path() {
         return poster_path;
+    }
+
+    public int getSeason_number() {
+        return season_number;
     }
 }

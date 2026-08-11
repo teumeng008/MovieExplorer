@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
@@ -88,6 +89,8 @@ public class HomeFragment extends Fragment {
     private List<TVShow> topRatedTv = new ArrayList<>();
     private List<TVShow> AiringTv = new ArrayList<>();
 
+    private TextView  NowPlayingText, UpcomingText;
+
 
     private Handler slideHandler = new Handler(Looper.getMainLooper());
 
@@ -107,6 +110,12 @@ public class HomeFragment extends Fragment {
         dropdown = view.findViewById(R.id.mediaTypeDropdown);
 
         viewPager = view.findViewById(R.id.viewPager);
+
+
+        NowPlayingText =view.findViewById(R.id.nowPlayingText);
+
+        UpcomingText =view.findViewById(R.id.upcomingText);
+
 
         PopularRecyclerView = view.findViewById(R.id.PopularCardScrollBar);
         NowPlayingRecyclerView = view.findViewById(R.id.NowPlayingCardScrollBar);
@@ -272,6 +281,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNowPlayingMovies() {
+        NowPlayingText.setText("Now Playing");
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
         api.getNowPlayingMovies(apiKey).enqueue(new Callback<MovieResponse>() {
@@ -296,6 +306,7 @@ public class HomeFragment extends Fragment {
         });
     }
     private void fetchOnTheAirTv() {
+        NowPlayingText.setText("On The Air");
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
         api.getOnTheAirTVShows(apiKey).enqueue(new Callback<TVResponse>() {
@@ -370,6 +381,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchUpComingMovies() {
+        UpcomingText.setText("Upcoming");
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
@@ -396,6 +408,7 @@ public class HomeFragment extends Fragment {
                 });
     }
     private void fetchAiringTv() {
+        UpcomingText.setText("Airing");
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
 
@@ -441,7 +454,7 @@ public class HomeFragment extends Fragment {
     private void fetch5PopularMovies() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getAllMovies(apiKey, 1).enqueue(new Callback<MovieResponse>() {
+        api.getPopularMovies(apiKey).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 

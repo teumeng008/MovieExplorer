@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,6 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieExplorer">
+        <activity
+            android:name=".PeopleDetailActivity"
+            android:exported="false" />
+        <!-- <activity -->
+        <!-- android:name=".SeasonEpActivity" -->
+        <!-- android:exported="false" -->
+        <!-- android:theme="@style/Theme.MovieExplorer" /> -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -24,13 +32,21 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
-
-        <activity android:name=".AuthActivity"
-                  android:exported="false"/>
-
-        <activity android:name=".MovieDetailActivity"
-                  android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".AuthActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MovieDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SeasonEpActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.SearchFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView15"
+            style="@style/text_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:textSize="48sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    app:boxStrokeColor="@color/card_text"
+                    app:boxStrokeWidth="2dp"
+                    app:endIconDrawable="@android:drawable/ic_menu_close_clear_cancel"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@color/light_gray"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true"
+                    app:startIconDrawable="@android:drawable/ic_menu_search"
+                    app:startIconTint="@color/card_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:hint="Search Movies"
+                    android:textColorHint="@color/card_bg">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/search_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/card_bg" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/categoryBtn"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:background="@drawable/black_overlay"
+                    android:backgroundTint="@color/card_text"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/category"
+                    android:tint="@color/light_gray" />
+
+            </LinearLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/categoryCtn"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/rounded_bg_2"
+                android:backgroundTint="#DC0D0D0D"
+                android:fillViewport="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- The Container that holds the categories -->
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/categoryChipGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:padding="10dp"
+                        android:visibility="visible"
+                        app:chipSpacingHorizontal="8dp"
+                        app:chipSpacingVertical="8dp"/>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/suggestion_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@color/bg" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

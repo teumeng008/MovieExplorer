@@ -4,21 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/component_bg"
+    android:background="@color/card_text"
     tools:context=".fragments.ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
             android:paddingEnd="10dp">
 
             <LinearLayout
@@ -34,6 +33,7 @@
                 android:id="@+id/EditProfileBtn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
                 android:background="@android:color/transparent"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/edit" />
@@ -43,9 +43,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/black_overlay"
+            android:backgroundTint="@color/bg"
+            android:elevation="10dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/textTitle"
@@ -62,20 +66,42 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
 
-                <ImageView
-                    android:id="@+id/imageProfile"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    app:srcCompat="@drawable/pf" />
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="10dp">
 
-                <ImageView
-                    android:id="@+id/imageCameraEditBtn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    <ImageView
+                        android:id="@+id/imageProfile"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:srcCompat="@drawable/pf" />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
-                    android:background="@android:color/background_light"
-                    android:backgroundTint="@android:color/transparent"
-                    app:srcCompat="@drawable/camera" />
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="12dp">
+
+                    <ImageView
+                        android:id="@+id/imageCameraEditBtn"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="bottom|end"
+                        android:background="@drawable/black_overlay"
+                        android:backgroundTint="@color/light_gray"
+                        android:elevation="12dp"
+                        android:padding="5dp"
+                        android:scaleType="centerInside"
+                        android:tint="@color/bg"
+                        app:srcCompat="@drawable/photo_camera" />
+                </androidx.cardview.widget.CardView>
+
             </FrameLayout>
 
             <TextView
@@ -92,22 +118,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="\@username"
-                android:textColor="@color/light_gray" />
+                android:textColor="@color/light_gray"
+                android:visibility="gone" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/black_overlay"
+            android:backgroundTint="@color/bg"
+            android:elevation="10dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="65dp"
                 android:layout_margin="15dp"
                 android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/bg_component"
+                android:backgroundTint="@color/card_text"
+                android:elevation="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="15dp">
@@ -134,10 +166,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="65dp"
                 android:layout_margin="15dp"
                 android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/bg_component"
+                android:backgroundTint="@color/card_text"
+                android:elevation="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="15dp">
@@ -179,10 +212,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="65dp"
                 android:layout_margin="15dp"
                 android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/bg_component"
+                android:backgroundTint="@color/card_text"
+                android:elevation="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="15dp">
@@ -224,10 +258,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="65dp"
                 android:layout_margin="15dp"
                 android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/bg_component"
+                android:backgroundTint="@color/card_text"
+                android:elevation="10dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="15dp">

@@ -35,14 +35,20 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packaging {
+        resources {
+            pickFirsts += "META-INF/androidx.cardview_cardview.version"
+        }
+    }
 }
 
 dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.annotation)
     implementation(libs.appcompat)
+    implementation(libs.coordinatorlayout)
     implementation(libs.gridlayout)
-    implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.material)
@@ -65,6 +71,15 @@ dependencies {
     implementation(libs.viewpager2)
 
     implementation("me.xdrop:fuzzywuzzy:1.4.0")
+
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+
+    implementation("com.github.yalantis:ucrop:2.2.8")
+
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

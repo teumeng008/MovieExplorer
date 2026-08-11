@@ -16,10 +16,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class SeasonCardAdapter extends RecyclerView.Adapter<SeasonCardAdapter.ViewHolder> {
-    List<Season> seasonList;
+    private List<Season> seasonList;
+    private SeasonClickListener seasonClickListener;
 
-    public SeasonCardAdapter(List<Season> seasonList){
+    public interface SeasonClickListener{
+        void onMouseClick(Season season);
+    }
+
+    public SeasonCardAdapter(List<Season> seasonList, SeasonClickListener seasonClickListener){
         this.seasonList = seasonList;
+        this.seasonClickListener = seasonClickListener;
     }
 
     @NonNull
@@ -33,12 +39,17 @@ public class SeasonCardAdapter extends RecyclerView.Adapter<SeasonCardAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
        Season season = seasonList.get(position);
        holder.name.setText(season.getName());
-       holder.ep_count.setText(String.valueOf(season.getEpisode_count()) + " episode");
-       holder.rating.setText("⭐" + String.format("%.2f",season.getVote_average()));
-       holder.overview.setText(season.getOverview());
-       holder.release_date.setText(season.getAir_date());
+//       holder.ep_count.setText(String.valueOf(season.getEpisode_count()) + " episode");
+//       holder.rating.setText("⭐" + String.format("%.2f",season.getVote_average()));
+//       holder.overview.setText(season.getOverview());
+//       holder.release_date.setText(season.getAir_date());
        String ImageURL = "https://image.tmdb.org/t/p/w500" + season.getPoster_path();
         Picasso.get().load(ImageURL).into(holder.poster);
+        holder.itemView.setOnClickListener(v ->{
+            if(seasonClickListener != null){
+                seasonClickListener.onMouseClick(season);
+            }
+        });
     }
 
     @Override
@@ -53,12 +64,7 @@ public class SeasonCardAdapter extends RecyclerView.Adapter<SeasonCardAdapter.Vi
         public ViewHolder(View view){
             super(view);
             name = view.findViewById(R.id.name);
-            overview = view.findViewById(R.id.overview);
-            rating = view.findViewById(R.id.rating);
-            release_date = view.findViewById(R.id.date);
-            ep_count = view.findViewById(R.id.ep_count);
             poster = view.findViewById(R.id.SeasonImage);
-
         }
     }
 

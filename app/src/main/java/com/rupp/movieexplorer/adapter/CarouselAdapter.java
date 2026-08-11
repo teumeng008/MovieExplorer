@@ -54,7 +54,7 @@ public class CarouselAdapter extends RecyclerView.Adapter<CarouselAdapter.Carous
 
     @Override
     public int getItemCount() {
-        return movieList.size();  // return the size of arraylist
+        return (movieList == null) ? 0 : movieList.size();  // return the size of arraylist
                                     //This tells ViewPager:
                                     //
                                     //How many slides exist?

@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
-    android:background="@drawable/tv_show_card_bg"
+    android:layout_width="200dp"
+    android:layout_height="280dp"
+    android:layout_marginEnd="10dp"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0"
-        android:orientation="horizontal">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            app:cardCornerRadius="20dp">
-
-            <ImageView
-                android:id="@+id/SeasonImage"
-                android:layout_width="160dp"
-                android:layout_height="240dp"
-                android:layout_weight="0"
-                android:scaleType="centerCrop"
-                tools:srcCompat="@tools:sample/avatars" />
-        </androidx.cardview.widget.CardView>
+        app:cardCornerRadius="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
+            android:layout_height="match_parent"
+            android:background="@drawable/black_overlay"
+            android:elevation="10dp"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -41,71 +26,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="1"
+                android:elevation="10dp"
                 android:text="name"
-                android:textColor="@color/gray"
-                android:textSize="32sp"
+                android:textColor="@color/light_gray"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1"
-                android:text="date"
-                android:textColor="@color/gray"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/ep_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1"
-                android:text="ep"
-                android:textColor="@color/gray"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_weight="1"
-                android:text="TextView"
-                android:textColor="@color/card_bg"
-                android:textSize="16sp" />
-
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView22"
+        <ImageView
+            android:id="@+id/SeasonImage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:text="overview"
-            android:textAllCaps="false"
-            android:textColor="@color/card_bg"
-            android:textSize="20sp"
-            android:textStyle="bold|italic" />
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/avatars" />
+    </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/overview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:text="TextView"
-            android:textColor="@color/gray" />
-    </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>

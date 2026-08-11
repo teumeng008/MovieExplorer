@@ -1,4 +1,4 @@
-package com.rupp.movieexplorer.fragments;
+package com.rupp.movieexplorer.viewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

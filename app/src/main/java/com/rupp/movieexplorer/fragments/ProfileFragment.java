@@ -26,13 +26,20 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.SplashActivity;
 import com.squareup.picasso.Picasso;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
+import java.util.Map;
 import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
@@ -45,8 +52,8 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
-    private FirebaseStorage storage;
     private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
+    private ActivityResultLauncher<Intent> cropLauncher;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -59,7 +66,27 @@ public class ProfileFragment extends Fragment {
                 new ActivityResultContracts.PickVisualMedia(),
                 uri -> {
                     if (uri != null) {
-                        uploadImageToFirebase(uri);
+                        startCrop(uri);
+                    }
+                }
+        );
+
+        cropLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
+                        Uri resultUri = UCrop.getOutput(result.getData());
+                        if (resultUri != null) {
+                            uploadImageToCloudinary(resultUri);
+                        }
+                    } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Throwable cropError = UCrop.getError(data);
+                            if (cropError != null) {
+                                Toast.makeText(getContext(), "Crop error: " + cropError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
                 }
         );
@@ -80,7 +107,7 @@ public class ProfileFragment extends Fragment {
 
     private void initViews(View view) {
         textName = view.findViewById(R.id.textName);
-        textUsername = view.findViewById(R.id.textUsername);
+//        textUsername = view.findViewById(R.id.textUsername);
         imageProfile = view.findViewById(R.id.imageProfile);
         imageCameraEditBtn = view.findViewById(R.id.imageCameraEditBtn);
         editProfileBtn = view.findViewById(R.id.EditProfileBtn);
@@ -98,7 +125,6 @@ public class ProfileFragment extends Fragment {
     private void initFirebase() {
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
     }
 
     private void setupClickListeners() {
@@ -167,21 +193,42 @@ public class ProfileFragment extends Fragment {
 
     private void deleteUserAccount(FirebaseUser user) {
         String uid = user.getUid();
-        // Delete from Firestore first
-        db.collection("Users").document(uid).delete()
-                .addOnSuccessListener(aVoid -> {
-                    // Then delete from Auth
-                    user.delete().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Account Deleted", Toast.LENGTH_SHORT).show();
-                            navigateToSplash();
-                        } else {
-                            String error = task.getException() != null ? task.getException().getMessage() : "Unknown error";
-                            Toast.makeText(getContext(), "Auth deletion failed: " + error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to delete user data", Toast.LENGTH_SHORT).show());
+        DocumentReference userDocRef = db.collection("Users").document(uid);
+
+        WriteBatch batch = db.batch();
+
+        userDocRef.collection("favorites").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
+                batch.delete(doc.getReference());
+            }
+        });
+
+        userDocRef.collection("watchlist").get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for(QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                batch.delete(doc.getReference());
+            }
+        });
+
+        batch.delete(userDocRef);
+        batch.commit().addOnSuccessListener(aVoid -> {
+            deleteAuthenticationAccount(user);
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Failed to clear user data", Toast.LENGTH_SHORT).show();
+        });
+
+    }
+
+    // Helper method to keep the code clean and readable
+    private void deleteAuthenticationAccount(FirebaseUser user) {
+        user.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(getContext(), "Account Completely Deleted", Toast.LENGTH_SHORT).show();
+                navigateToSplash();
+            } else {
+                String error = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                Toast.makeText(getContext(), "Auth deletion failed: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadUserProfile() {
@@ -196,7 +243,7 @@ public class ProfileFragment extends Fragment {
                             String profileUrl = documentSnapshot.getString("profileImage");
 
                             textName.setText(name != null ? name : "No Name");
-                            textUsername.setText("@" + (name != null ? name.toLowerCase().replace(" ", "_") : "user"));
+//                            textUsername.setText("@" + (name != null ? name.toLowerCase().replace(" ", "_") : "user"));
 
                             if (profileUrl != null && !profileUrl.isEmpty()) {
                                 Picasso.get().load(profileUrl).placeholder(R.drawable.pf).into(imageProfile);
@@ -217,24 +264,59 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void uploadImageToFirebase(Uri imageUri) {
+    private void startCrop(@NonNull Uri uri) {
+        String destinationFileName = "cropped_profile_" + System.currentTimeMillis() + ".jpg";
+        UCrop.Options options = new UCrop.Options();
+
+        options.setCircleDimmedLayer(true);
+        options.setShowCropFrame(false);
+        options.setToolbarColor(android.graphics.Color.BLACK);
+        options.setStatusBarColor(android.graphics.Color.BLACK);
+        options.setToolbarWidgetColor(android.graphics.Color.WHITE);
+        options.setActiveControlsWidgetColor(android.graphics.Color.WHITE);
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(requireContext().getCacheDir(), destinationFileName)))
+                .withAspectRatio(1, 1)
+                .withMaxResultSize(1000, 1000)
+                .withOptions(options);
+
+        cropLauncher.launch(uCrop.getIntent(requireContext()));
+    }
+
+    private void uploadImageToCloudinary(Uri imageUri) {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) return;
 
         Toast.makeText(getContext(), "Uploading...", Toast.LENGTH_SHORT).show();
 
-        StorageReference profileRef = storage.getReference().child("profile_images/" + user.getUid() + ".jpg");
-        profileRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> profileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    String downloadUrl = uri.toString();
-                    db.collection("Users").document(user.getUid())
-                            .update("profileImage", downloadUrl)
-                            .addOnSuccessListener(aVoid -> {
-                                Picasso.get().load(downloadUrl).into(imageProfile);
-                                Toast.makeText(getContext(), "Profile Image Updated", Toast.LENGTH_SHORT).show();
-                            });
-                }))
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        MediaManager.get().upload(imageUri)
+                .unsigned("User_profile") // Replace with your Cloudinary upload preset
+                .callback(new UploadCallback() {
+                    @Override
+                    public void onStart(String requestId) {}
+
+                    @Override
+                    public void onProgress(String requestId, long bytes, long totalBytes) {}
+
+                    @Override
+                    public void onSuccess(String requestId, Map resultData) {
+                        String downloadUrl = (String) resultData.get("secure_url");
+                        db.collection("Users").document(user.getUid())
+                                .update("profileImage", downloadUrl)
+                                .addOnSuccessListener(aVoid -> {
+                                    Picasso.get().load(downloadUrl).into(imageProfile);
+                                    Toast.makeText(getContext(), "Profile Image Updated", Toast.LENGTH_SHORT).show();
+                                });
+                    }
+
+                    @Override
+                    public void onError(String requestId, ErrorInfo error) {
+                        Toast.makeText(getContext(), "Upload failed: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onReschedule(String requestId, ErrorInfo error) {}
+                }).dispatch();
     }
 
     private void showEditNameDialog() {

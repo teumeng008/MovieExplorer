@@ -31,8 +31,9 @@ public class WatchlistFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.WatchListTabLayout);
         viewPager2 = view.findViewById(R.id.WatchListViewPager2);
-        viewPagerAdapter = new ViewPagerAdapter(getActivity());
+        viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(viewPagerAdapter);
+        viewPager2.setSaveEnabled(false);
 
         new TabLayoutMediator(tabLayout,viewPager2,(tab,position) -> {
             switch (position){
@@ -45,5 +46,11 @@ public class WatchlistFragment extends Fragment {
             }
         }).attach();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Removing viewPager2.setAdapter(null) to avoid FragmentStateAdapter restoration crash
     }
 }

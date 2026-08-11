@@ -70,7 +70,7 @@ public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.View
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        return (movieList == null) ? 0 : movieList.size();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView poster;

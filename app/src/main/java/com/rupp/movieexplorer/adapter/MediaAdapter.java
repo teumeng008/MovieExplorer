@@ -11,30 +11,37 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rupp.movieexplorer.R;
+import com.rupp.movieexplorer.model.MediaItem;
 import com.rupp.movieexplorer.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // Adapter = bridge between data (movieList) and UI (RecyclerView)
-public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // 🔥 Two types of items
     private static final int VIEW_TYPE_MOVIE = 0;
     private static final int VIEW_TYPE_PAGINATION = 1;
-    private MovieCardAdapter.OnMovieClickListener onMovieClickListener;
-    List<Movie> movieList;
+    private OnMediaClickListener onMediaClickListener;
+    List<MediaItem> mediaList = new ArrayList<>();
     int currentPage = 1;
 
-    public MovieAdapter(List<Movie> movieList, MovieCardAdapter.OnMovieClickListener onMovieClickListener) {
-        this.onMovieClickListener = onMovieClickListener;
-        this.movieList = movieList;
+    public MediaAdapter(List<MediaItem> mediaList, OnMediaClickListener onMediaClickListener) {
+        this.onMediaClickListener = onMediaClickListener;
+        if (mediaList != null) {
+            this.mediaList = mediaList;
+        }
     }
 
     // 🔥 Listener for pagination button clicks
     public interface PaginationListener {
         void onNextPage();
         void onPreviousPage();
+    }
+    public interface OnMediaClickListener{
+        void OnMediaClick(MediaItem item);
     }
 
     private PaginationListener paginationListener;
@@ -47,7 +54,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemViewType(int position) {
         // If it's the last position → pagination
-        if (position == movieList.size()) {
+        if (mediaList == null || position == mediaList.size()) {
             return VIEW_TYPE_PAGINATION;
         }
         return VIEW_TYPE_MOVIE;
@@ -78,20 +85,20 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         // 👉 If it's a movie item
         if (holder instanceof MovieViewHolder) {
 
-            Movie movie = movieList.get(position);
+            MediaItem media = mediaList.get(position);
 
             MovieViewHolder h = (MovieViewHolder) holder;
-            h.title.setText(movie.getTitle());
-            h.rating.setText("⭐ " + String.format("%.2f", movie.getVoteAverage()));
+            h.title.setText(media.getTitle());
+            h.rating.setText("⭐ " + String.format("%.2f", media.getVoteAverage()));
 
-            String imageUrl = "https://image.tmdb.org/t/p/w500" + movie.getPosterPath();
+            String imageUrl = "https://image.tmdb.org/t/p/w500" + media.getPosterPath();
 
             Picasso.get()
                     .load(imageUrl)
                     .into(h.poster);
             holder.itemView.setOnClickListener(v ->{
-                if(onMovieClickListener != null){
-                    onMovieClickListener.onMovieClick(movie);
+                if(onMediaClickListener != null){
+                    onMediaClickListener.OnMediaClick(media);
                 }
             });
         }
@@ -135,7 +142,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     // 🔥 Total items = movies + 1 pagination row
     @Override
     public int getItemCount() {
-        return movieList.size() + 1;
+        return (mediaList == null) ? 1 : mediaList.size() + 1;
     }
 
     // =========================
@@ -186,7 +193,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         button.setBackgroundResource(R.drawable.rounded_bg_2);
         button.setBackgroundTintList(
                 ColorStateList.valueOf(
-                        button.getContext().getResources().getColor(R.color.gray)
+                        button.getContext().getResources().getColor(R.color.light_gray)
                 )
         );
         button.setTextColor(button.getContext().getResources().getColor(R.color.bg));

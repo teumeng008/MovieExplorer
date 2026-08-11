@@ -63,7 +63,7 @@ public class TvCardAdapter extends RecyclerView.Adapter<TvCardAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return tvShowList.size();
+        return (tvShowList == null) ? 0 : tvShowList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

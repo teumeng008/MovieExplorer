@@ -9,6 +9,10 @@
         android:title="Discover"
         android:icon="@drawable/movie_list"/>
     <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/search_removebg_preview"
+        android:title="Search" />
+    <item
         android:id="@+id/menu_watchlist"
         android:title="Watchlist"
         android:icon="@drawable/watchlist"/>

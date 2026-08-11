@@ -20,6 +20,7 @@ import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.adapter.FireStoreCardAdapter;
 import com.rupp.movieexplorer.adapter.LoadingAdapter;
 import com.rupp.movieexplorer.model.FavoriteItem;
+import com.rupp.movieexplorer.viewModel.SavedViewModel;
 
 import java.util.ArrayList;
 

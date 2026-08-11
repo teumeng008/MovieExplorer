@@ -5,8 +5,11 @@ import com.rupp.movieexplorer.model.Movie;
 import com.rupp.movieexplorer.model.MovieResponse;
 import com.rupp.movieexplorer.model.MultiResponse;
 import com.rupp.movieexplorer.model.People;
+import com.rupp.movieexplorer.model.Season;
+import com.rupp.movieexplorer.model.SeasonDetail;
 import com.rupp.movieexplorer.model.TVResponse;
 import com.rupp.movieexplorer.model.TVShow;
+import com.rupp.movieexplorer.model.VideoResponse;
 
 import org.checkerframework.common.reflection.qual.GetClass;
 
@@ -58,7 +61,12 @@ public interface MovieApi {
     Call<Movie> getMovieDetails(
             @Path("movie_id") int id,
             @Query("api_key") String apiKey
+    );
 
+    @GET("movie/{movie_id}/videos")
+    Call<VideoResponse> getMovieTrailer(
+            @Path("movie_id") int id,
+            @Query("api_key") String apikey
     );
 
     @GET("tv/{tv_show_id}")
@@ -67,16 +75,56 @@ public interface MovieApi {
             @Query("api_key") String apikey
     );
 
+    @GET("tv/{tv_show_id}/videos")
+    Call<VideoResponse> getTvShowTrailer(
+            @Path("tv_show_id") int id,
+            @Query("api_key") String apikey
+    );
+    @GET("tv/{tv_show_id}/season/{season_number}")
+    Call<SeasonDetail> getTvShowSeasonDetail(
+            @Path("tv_show_id") int id,
+            @Path("season_number") int seasonNumber,
+            @Query("api_key") String apikey
+    );
+
+    @GET("tv/{tv_show_id}/season/{season_number}/videos")
+    Call<VideoResponse> getTvShowSeasonVideo(
+            @Path("tv_show_id") int id,
+            @Path("season_number") int seasonNumber,
+            @Query("api_key") String apikey
+    );
+
+    @GET("tv/{tv_show_id}/season/{season_number}/episode/{episode_number}/videos")
+    Call<VideoResponse> getTvShowEpClip(
+            @Path("tv_show_id") int id,
+            @Path("season_number") int seasonNumber,
+            @Path("episode_number") int episodeNumber,
+            @Query("api_key") String apikey
+    );
+
+
     /**
      * Discovers movies from the database. This acts as a general "all movies" endpoint.
      * @param apiKey Your TMDB API key.
      * @param page The page number to fetch (for pagination).
      * @return A Call object that can be executed to get a MovieResponse.
      */
+    @GET("discover/tv")
+    Call<TVResponse> getAllTvShows(
+            @Query("api_key") String apiKey,
+            @Query("page") int page,
+            @Query("with_genres") String genres,            // Comma-separated genre IDs (e.g. "18,10759")
+            @Query("first_air_date_year") Integer year,    // TV show release year (e.g. 2023)
+            @Query("vote_average.gte") Double minRating     // Minimum rating (e.g. 7.5)
+    );
+
     @GET("discover/movie")
     Call<MovieResponse> getAllMovies(
             @Query("api_key") String apiKey,
-            @Query("page") int page
+            @Query("page") int page,
+            @Query("with_genres") String genres,            // Comma-separated genre IDs (e.g. "28,12")
+            @Query("primary_release_year") Integer year,   // Movie release year (e.g. 2023)
+            @Query("vote_average.gte") Double minRating     // Minimum rating (e.g. 8.0)
     );
     @GET("discover/movie")
     Call<MovieResponse> getUpcomingKHMovies(
