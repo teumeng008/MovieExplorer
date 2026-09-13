@@ -39,7 +39,7 @@
         <!-- Project Title -->
         <TextView
             android:id="@+id/textTitle"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="8dp"
