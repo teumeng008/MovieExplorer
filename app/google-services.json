@@ -12,7 +12,20 @@
           "package_name": "com.rupp.movieexplorer"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "799141751989-35tpihsdiprc6dcu029h4cqui2nonlfs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rupp.movieexplorer",
+            "certificate_hash": "754558b3502f279514dbee8214e5cf7e3b5fe419"
+          }
+        },
+        {
+          "client_id": "799141751989-t2sad8jcm63gs38r7k2tmo4vbni61l3i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDvihNtmgwGbvxfJHMXuetcDtTmeJBDrio"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "799141751989-t2sad8jcm63gs38r7k2tmo4vbni61l3i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

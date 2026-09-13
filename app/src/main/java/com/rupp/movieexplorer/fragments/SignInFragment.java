@@ -1,5 +1,6 @@
 package com.rupp.movieexplorer.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,11 +10,14 @@ import android.text.method.Touch;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.rupp.movieexplorer.MainActivity;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.SplashActivity;
+import com.rupp.movieexplorer.helperClass.GoogleSignUpOrLogin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,9 +37,11 @@ public class SignInFragment extends Fragment {
     private FirebaseFirestore db;
     private TextView LoginText;
     private TextInputEditText EmailEditText, PasswordEditText, C_PasswordEditText, NameEditText;
+    private TextInputLayout NameLayout, EmailLayout, PasswordLayout, C_PasswordLayout;
     private MaterialButton SignInBtn;
     private ProgressBar loading_bar;
     private View loading_overlay;
+    private ImageView googleSignUpBtn;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,24 +60,52 @@ public class SignInFragment extends Fragment {
         C_PasswordEditText = view.findViewById(R.id.signInConfirmPasswordEditText);
         SignInBtn = view.findViewById(R.id.signInButton);
 
+        NameLayout = view.findViewById(R.id.signInUserNameLayout);
+        EmailLayout = view.findViewById(R.id.signInEmailLayout);
+        PasswordLayout = view.findViewById(R.id.signInPasswordLayout);
+        C_PasswordLayout = view.findViewById(R.id.signInConfirmPasswordLayout);
+
+        googleSignUpBtn = view.findViewById(R.id.googleBtn);
 
 
         SignInBtn.setOnClickListener(v ->{
+            hideKeyboard(v);
+            NameLayout.setError(null);
+            EmailLayout.setError(null);
+            PasswordLayout.setError(null);
+            C_PasswordLayout.setError(null);
+
             String name = NameEditText.getText().toString().trim();
             String email = EmailEditText.getText().toString().trim();
             String password = PasswordEditText.getText().toString().trim();
             String confirm_password = C_PasswordEditText.getText().toString().trim();
 
-            if(name.isEmpty() || email.isEmpty() || password.isEmpty() || confirm_password.isEmpty()){
-                Toast.makeText(getContext(), "Fill all Fields", Toast.LENGTH_SHORT).show();
-                return;
+            boolean hasError = false;
+            if(name.isEmpty()){
+                NameLayout.setError("Name is required");
+                hasError = true;
             }
+            if(email.isEmpty()){
+                EmailLayout.setError("Email is required");
+                hasError = true;
+            }
+            if(password.isEmpty()){
+                PasswordLayout.setError("Password is required");
+                hasError = true;
+            }
+            if(confirm_password.isEmpty()){
+                C_PasswordLayout.setError("Confirm password is required");
+                hasError = true;
+            }
+
+            if(hasError) return;
+
             if(password.length() < 6){
-                Toast.makeText(getContext(),"Password too short (min 6)", Toast.LENGTH_SHORT).show();
+                PasswordLayout.setError("Password too short (min 6)");
                 return;
             }
             if(!confirm_password.equals(password)){
-                Toast.makeText(getContext(),"Password not matching", Toast.LENGTH_SHORT).show();
+                C_PasswordLayout.setError("Passwords do not match");
                 return;
             }
             SignInBtn.setEnabled(false);
@@ -86,19 +121,19 @@ public class SignInFragment extends Fragment {
                    user.put("email",email);
 
                    db.collection("Users").document(userId).set(user).addOnSuccessListener(unused -> {
-                      Toast.makeText(getContext(),"Account Created",Toast.LENGTH_SHORT).show();
+                       Snackbar.make(view, "Account Created", Snackbar.LENGTH_SHORT).show();
                        Intent intent = new Intent(getActivity(), SplashActivity.class);
                        startActivity(intent);
                        requireActivity().finish();
 
                    }).addOnFailureListener(e -> {
-                     Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                     Snackbar.make(view, e.getMessage(), Snackbar.LENGTH_LONG).show();
                      SignInBtn.setEnabled(true);
+                     loading_bar.setVisibility(View.GONE);
+                     loading_overlay.setVisibility(View.GONE);
                    });
                } else {
-                   Toast.makeText(getContext(),
-                           task.getException().getMessage(),
-                           Toast.LENGTH_SHORT).show();
+                   Snackbar.make(view, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                    SignInBtn.setEnabled(true);
                    loading_bar.setVisibility(View.GONE);
                    loading_overlay.setVisibility(View.GONE);
@@ -113,6 +148,20 @@ public class SignInFragment extends Fragment {
 
         });
 
+        googleSignUpBtn.setOnClickListener( v ->{
+            GoogleSignUpOrLogin googleSignUpOrLogin = new GoogleSignUpOrLogin(requireActivity());
+            googleSignUpOrLogin.startSignIn(v);
+        });
+
         return view;
+    }
+
+    private void hideKeyboard(View view) {
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
     }
 }

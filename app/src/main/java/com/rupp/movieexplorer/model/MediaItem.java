@@ -15,6 +15,10 @@ public class MediaItem {
 
     @SerializedName("name")         // TV shows have "name"
     private String name;
+
+    @SerializedName("profile_path")
+    private String profile_path;
+
     @SerializedName("vote_average")
     private double voteAverage;
 
@@ -42,6 +46,9 @@ public class MediaItem {
     @SerializedName("genres")
     private List<Genres> genres;
 
+    @SerializedName("gender")
+    private int gender;
+
     @SerializedName("popularity")
     private double popularity;
 
@@ -66,6 +73,15 @@ public class MediaItem {
 
     public int getId() { return id; }
     public String getPosterPath() { return posterPath; }
+
+    public String getProfile_path() {
+        return profile_path;
+    }
+
+    public String getGender() {
+        return gender == 2 ? "Male" : "Female";
+    }
+
     public String getOverview() { return overview; }
     public String getMediaType() { return mediaType; }
 

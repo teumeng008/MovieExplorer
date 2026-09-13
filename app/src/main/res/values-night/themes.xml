@@ -1,11 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.MovieExplorer" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Base application theme forced to Dark. -->
+    <style name="Base.Theme.MovieExplorer" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:windowBackground">@color/bg_component</item>
+        <item name="android:statusBarColor">@color/bg_component</item>
     </style>
 
+    <style name="Theme.MovieExplorer" parent="Base.Theme.MovieExplorer" />
+
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
-        <item name="colorSecondaryContainer">@color/nav</item>
+        <item name="colorSecondaryContainer">@color/card_text</item>
     </style>
 </resources>

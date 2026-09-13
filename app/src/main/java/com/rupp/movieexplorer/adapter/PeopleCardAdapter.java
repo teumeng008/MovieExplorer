@@ -17,10 +17,15 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class PeopleCardAdapter extends RecyclerView.Adapter<PeopleCardAdapter.ViewHolder> {
-
+    private OnClickPersonListener onClickPersonListener;
     private List<People> peoples;
-    public PeopleCardAdapter(List<People> peoples){
+
+    public interface OnClickPersonListener{
+        void OnClickPerson(People people);
+    }
+    public PeopleCardAdapter(List<People> peoples,OnClickPersonListener onClickPersonListener){
         this.peoples = peoples;
+        this.onClickPersonListener = onClickPersonListener;
     }
 
     @NonNull
@@ -36,13 +41,17 @@ public class PeopleCardAdapter extends RecyclerView.Adapter<PeopleCardAdapter.Vi
          String imageURL ="https://image.tmdb.org/t/p/w500"+ people.getProfile_image();
         Picasso.get().load(imageURL).placeholder(R.drawable.user_icon).into(holder.imageView);
         holder.textView.setText(people.getName());
-        if(people.getCharacter() != null){
+        if(people.getCharacter() != null && !people.getCharacter().isEmpty()){
             holder.Character.setText(people.getCharacter());
             holder.PlayAsLabel.setVisibility(View.VISIBLE);
             holder.Character.setVisibility(View.VISIBLE);
         }
+        holder.itemView.setOnClickListener( v -> {
+            if(onClickPersonListener != null){
+                onClickPersonListener.OnClickPerson(people);
+            }
+        });
     }
-
     @Override
     public int getItemCount() {
         return peoples.size();

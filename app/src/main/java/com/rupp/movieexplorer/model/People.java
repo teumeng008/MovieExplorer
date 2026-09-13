@@ -3,6 +3,8 @@ package com.rupp.movieexplorer.model;
 import com.google.gson.annotations.SerializedName;
 
 public class People {
+    @SerializedName("id")
+    private int id;
     @SerializedName("gender")
     private String gender;
 
@@ -17,6 +19,14 @@ public class People {
 
     @SerializedName("job")
     private String job;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getGender() {
         return gender;

@@ -7,304 +7,315 @@
     android:background="@color/card_text"
     tools:context=".fragments.ProfileFragment">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/mainContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingEnd="10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical|end"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/EditProfileBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:background="@android:color/transparent"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/edit" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/black_overlay"
-            android:backgroundTint="@color/bg"
-            android:elevation="10dp"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
-                android:id="@+id/textTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="My Profile"
-                android:textAllCaps="false"
-                android:textColor="@color/card_bg"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="50dp"
-                    app:cardElevation="10dp">
-
-                    <ImageView
-                        android:id="@+id/imageProfile"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        app:srcCompat="@drawable/pf" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    app:cardCornerRadius="50dp"
-                    app:cardElevation="12dp">
-
-                    <ImageView
-                        android:id="@+id/imageCameraEditBtn"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="bottom|end"
-                        android:background="@drawable/black_overlay"
-                        android:backgroundTint="@color/light_gray"
-                        android:elevation="12dp"
-                        android:padding="5dp"
-                        android:scaleType="centerInside"
-                        android:tint="@color/bg"
-                        app:srcCompat="@drawable/photo_camera" />
-                </androidx.cardview.widget.CardView>
-
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/textName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Username"
-                android:textColor="@color/card_bg"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/textUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="\@username"
-                android:textColor="@color/light_gray"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:background="@drawable/black_overlay"
-            android:backgroundTint="@color/bg"
-            android:elevation="10dp"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_margin="15dp"
-                android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/card_text"
-                android:elevation="10dp"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:paddingEnd="10dp">
 
-                <ImageView
-                    android:id="@+id/ivNotification"
-                    android:layout_width="20dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:tint="@color/card_bg"
-                    app:srcCompat="@drawable/noti" />
-
-                <Switch
-                    android:id="@+id/switch1"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="4"
-                    android:showText="false"
-                    android:text="Notification"
-                    android:textColor="@color/card_bg"
-                    android:trackTint="@color/light_gray" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_margin="15dp"
-                android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/card_text"
-                android:elevation="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="15dp">
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="45dp"
                     android:layout_weight="1"
+                    android:gravity="center_vertical|end"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/EditProfileBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@android:color/transparent"
                     android:scaleType="centerCrop"
-                    android:tint="@color/card_bg"
-                    app:srcCompat="@drawable/change_password" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical|end"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Change password"
-                        android:textColor="@color/card_bg" />
-
-                    <ImageButton
-                        android:id="@+id/ChangePwBtn"
-                        android:layout_width="40dp"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        android:scaleType="centerCrop"
-                        android:tint="@color/card_bg"
-                        app:srcCompat="@drawable/forward" />
-                </LinearLayout>
+                    app:srcCompat="@drawable/edit" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_margin="15dp"
-                android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/card_text"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/black_overlay"
+                android:backgroundTint="@color/bg"
                 android:elevation="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="15dp">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-                <ImageView
-                    android:id="@+id/ivLogout"
-                    android:layout_width="10dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:tint="@color/card_bg"
-                    app:srcCompat="@drawable/out" />
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/textTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical|end"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:text="My Profile"
+                    android:textAllCaps="false"
+                    android:textColor="@color/card_bg"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                    <TextView
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="10dp">
+
+                        <ImageView
+                            android:id="@+id/imageProfile"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            app:srcCompat="@drawable/pf" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Log out"
-                        android:textColor="@color/card_bg" />
+                        android:layout_gravity="bottom|end"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="12dp">
 
-                    <ImageButton
-                        android:id="@+id/LogOutBtn"
-                        android:layout_width="40dp"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        android:scaleType="centerCrop"
-                        android:tint="@color/card_bg"
-                        app:srcCompat="@drawable/forward" />
-                </LinearLayout>
+                        <ImageView
+                            android:id="@+id/imageCameraEditBtn"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="bottom|end"
+                            android:background="@drawable/black_overlay"
+                            android:backgroundTint="@color/light_gray"
+                            android:elevation="12dp"
+                            android:padding="5dp"
+                            android:scaleType="centerInside"
+                            android:tint="@color/bg"
+                            app:srcCompat="@drawable/photo_camera" />
+                    </androidx.cardview.widget.CardView>
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/textName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Username"
+                    android:textColor="@color/card_bg"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="\@username"
+                    android:textColor="@color/light_gray"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:layout_margin="15dp"
-                android:background="@drawable/rounded_bg"
-                android:backgroundTint="@color/card_text"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/black_overlay"
+                android:backgroundTint="@color/bg"
                 android:elevation="10dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="15dp">
-
-                <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:tint="@color/card_bg"
-                    app:srcCompat="@drawable/delete_acc" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="4"
-                    android:gravity="center_vertical|end"
-                    android:orientation="horizontal">
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/card_text"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp"
+                    android:visibility="gone">
 
-                    <TextView
+                    <ImageView
+                        android:id="@+id/ivNotification"
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/noti" />
+
+                    <Switch
+                        android:id="@+id/switch1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Delete Account"
-                        android:textColor="#F40505"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/DeleteAccBtn"
-                        android:layout_width="40dp"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        android:scaleType="centerCrop"
-                        android:tint="@color/card_bg"
-                        app:srcCompat="@drawable/forward" />
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="4"
+                        android:showText="false"
+                        android:text="Notification"
+                        android:textColor="@color/card_bg"
+                        android:trackTint="@color/light_gray" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ChangePwCtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/card_text"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/change_password" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="4"
+                        android:gravity="center_vertical|end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Change password"
+                            android:textColor="@color/card_bg" />
+
+                        <ImageButton
+                            android:id="@+id/ChangePwBtn"
+                            android:layout_width="40dp"
+                            android:layout_height="30dp"
+                            android:background="@android:color/transparent"
+                            android:scaleType="centerCrop"
+                            android:tint="@color/card_bg"
+                            app:srcCompat="@drawable/forward" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/card_text"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <ImageView
+                        android:id="@+id/ivLogout"
+                        android:layout_width="10dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/out" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="4"
+                        android:gravity="center_vertical|end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Log out"
+                            android:textColor="@color/card_bg" />
+
+                        <ImageButton
+                            android:id="@+id/LogOutBtn"
+                            android:layout_width="40dp"
+                            android:layout_height="30dp"
+                            android:background="@android:color/transparent"
+                            android:scaleType="centerCrop"
+                            android:tint="@color/card_bg"
+                            app:srcCompat="@drawable/forward" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/rounded_bg"
+                    android:backgroundTint="@color/card_text"
+                    android:elevation="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:tint="@color/card_bg"
+                        app:srcCompat="@drawable/delete_acc" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="4"
+                        android:gravity="center_vertical|end"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Delete Account"
+                            android:textColor="#F40505"
+                            android:textStyle="bold" />
+
+                        <ImageButton
+                            android:id="@+id/DeleteAccBtn"
+                            android:layout_width="40dp"
+                            android:layout_height="30dp"
+                            android:background="@android:color/transparent"
+                            android:scaleType="centerCrop"
+                            android:tint="@color/card_bg"
+                            app:srcCompat="@drawable/forward" />
+                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-
+    <include
+        android:id="@+id/loadingLayout"
+        layout="@layout/shimmer_profile"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/DeleteAccPromph"

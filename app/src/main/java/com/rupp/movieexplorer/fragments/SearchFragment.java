@@ -22,8 +22,10 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.rupp.movieexplorer.Constants;
 import com.rupp.movieexplorer.MovieDetailActivity;
+import com.rupp.movieexplorer.PersonDetailActivity;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.adapter.LoadingAdapter;
+import com.rupp.movieexplorer.adapter.PeopleCardAdapter;
 import com.rupp.movieexplorer.adapter.SuggestionAdapter;
 import com.rupp.movieexplorer.api.MovieApi;
 import com.rupp.movieexplorer.api.RetrofitClient;
@@ -31,6 +33,7 @@ import com.rupp.movieexplorer.model.Genres;
 import com.rupp.movieexplorer.model.MediaItem;
 import com.rupp.movieexplorer.model.Movie;
 import com.rupp.movieexplorer.model.MultiResponse;
+import com.rupp.movieexplorer.model.People;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +80,12 @@ public class SearchFragment extends Fragment {
         search_text = view.findViewById(R.id.search_text);
         suggestion_view = view.findViewById(R.id.suggestion_view);
         suggestionAdapter = new SuggestionAdapter(suggestList,item ->{
+            if(item.getMediaType().equals("person")){
+                People people = new People();
+                people.setId(item.getId());
+                openPersonDetail(people);
+                return;
+            }
             openDetail(item);
         });
         suggestion_view.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -109,7 +118,7 @@ public class SearchFragment extends Fragment {
 
                 searchRunnable = () ->{
                     suggestion_view.setAdapter(new LoadingAdapter());
-                    search_movieOrTv(query);
+                    search(query);
 
                     suggestion_view.setVisibility(View.VISIBLE);
                     suggestion_view.setAlpha(0f);
@@ -150,7 +159,7 @@ public class SearchFragment extends Fragment {
             }
             String CurrentQuery = search_text.getText().toString().trim();
             if(CurrentQuery.length()>= 2 ){
-                search_movieOrTv(CurrentQuery);
+                search(CurrentQuery);
             }
         });
 
@@ -221,7 +230,7 @@ public class SearchFragment extends Fragment {
         }
         map.put(name, idList);
     }
-    private void search_movieOrTv(String query){
+    private void search(String query){
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
         Call<MultiResponse> call = api.searchMovieAndTVShow(Constants.API_KEY,query);
         call.enqueue(new Callback<MultiResponse>() {
@@ -229,9 +238,12 @@ public class SearchFragment extends Fragment {
             public void onResponse(Call<MultiResponse> call, Response<MultiResponse> response) {
                 List<MediaItem> allItem = response.body().getResults();
                 List<MediaItem> SelectedItem = new ArrayList<>();
+                List<MediaItem> peopleList = new ArrayList<>();
                 // clean query
                 for(MediaItem i : allItem ){
-                    if("person".equals(i.getMediaType())){
+
+                    if(i.getMediaType().equals("person")){
+                        peopleList.add(i);
                         continue;
                     }
 
@@ -263,12 +275,14 @@ public class SearchFragment extends Fragment {
                     i.setItemScore(itemScore);
                     SelectedItem.add(i);
                 }
+
                 //sort from the highest score to less
                 Collections.sort(SelectedItem,(a, b)->
                         Double.compare(b.getItemScore(), a.getItemScore())
                 );
                 suggestion_view.setAdapter(suggestionAdapter);
                 suggestList.clear();
+                suggestList.addAll(peopleList);
                 suggestList.addAll(SelectedItem);
                 suggestionAdapter.notifyDataSetChanged();
             }
@@ -285,6 +299,11 @@ public class SearchFragment extends Fragment {
         intent.putExtra("id", item.getId());
         intent.putExtra("type",item.getMediaType());
 
+        startActivity(intent);
+    }
+    private void openPersonDetail(People people){
+        Intent intent = new Intent(requireContext(), PersonDetailActivity.class);
+        intent.putExtra("Person_id", people.getId());
         startActivity(intent);
     }
 //    private void openMovieDetail(Movie movie){

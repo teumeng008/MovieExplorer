@@ -1,9 +1,13 @@
 package com.rupp.movieexplorer.fragments;
 
 import android.content.Intent;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.GetCredentialRequest;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.os.CancellationSignal;
 import android.widget.EditText;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -11,7 +15,12 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
+import androidx.credentials.Credential;
+import androidx.credentials.CustomCredential;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +31,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.cloudinary.android.MediaManager;
@@ -33,6 +48,7 @@ import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.rupp.movieexplorer.Constants;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.SplashActivity;
 import com.squareup.picasso.Picasso;
@@ -41,6 +57,8 @@ import com.yalantis.ucrop.UCrop;
 import java.io.File;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ProfileFragment extends Fragment {
 
@@ -49,15 +67,18 @@ public class ProfileFragment extends Fragment {
     private ImageButton editProfileBtn, changePwBtn, logOutBtn, deleteAccBtn;
     private MaterialButton logoutBtnFinal, cancelBtn, deleteBtnFinal, cancelDeleteBtn;
     private LinearLayout logoutLayout, deleteLayout;
+    private View loadingLayout, mainContent;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private ActivityResultLauncher<PickVisualMediaRequest> imagePickerLauncher;
     private ActivityResultLauncher<Intent> cropLauncher;
+    private LinearLayout changePWCtn;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +105,10 @@ public class ProfileFragment extends Fragment {
                         if (data != null) {
                             Throwable cropError = UCrop.getError(data);
                             if (cropError != null) {
-                                Toast.makeText(getContext(), "Crop error: " + cropError.getMessage(), Toast.LENGTH_SHORT).show();
+                                View view = getView();
+                                if (view != null) {
+                                    Snackbar.make(view, "Crop error: " + cropError.getMessage(), Snackbar.LENGTH_LONG).show();
+                                }
                             }
                         }
                     }
@@ -99,6 +123,7 @@ public class ProfileFragment extends Fragment {
 
         initViews(view);
         initFirebase();
+        setUpUI();
         setupClickListeners();
         loadUserProfile();
 
@@ -120,6 +145,16 @@ public class ProfileFragment extends Fragment {
         deleteBtnFinal = view.findViewById(R.id.DeleteAccBtnFinal);
         cancelDeleteBtn = view.findViewById(R.id.CancelDeleteBtn);
         deleteLayout = view.findViewById(R.id.DeleteAccPromph);
+        loadingLayout = view.findViewById(R.id.loadingLayout);
+        mainContent = view.findViewById(R.id.mainContent);
+        changePWCtn = view.findViewById(R.id.ChangePwCtn);
+    }
+
+    private void showLoading(boolean isLoading) {
+        if (loadingLayout != null && mainContent != null) {
+            loadingLayout.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            mainContent.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void initFirebase() {
@@ -152,7 +187,11 @@ public class ProfileFragment extends Fragment {
         cancelDeleteBtn.setOnClickListener(v -> deleteLayout.setVisibility(View.GONE));
 
         deleteBtnFinal.setOnClickListener(v -> {
-            showReAuthForDeleteDialog();
+            if (isGoogleUser()){
+                showReAuthGoogleUser();
+            }else {
+                showReAuthForDeleteDialog();
+            }
         });
     }
 
@@ -170,7 +209,7 @@ public class ProfileFragment extends Fragment {
         builder.setPositiveButton("Delete Forever", (dialog, which) -> {
             String password = passwordInput.getText().toString().trim();
             if (password.isEmpty()) {
-                Toast.makeText(getContext(), "Password required", Toast.LENGTH_SHORT).show();
+                passwordInput.setError("Password required");
                 return;
             }
 
@@ -181,7 +220,10 @@ public class ProfileFragment extends Fragment {
                             if (reAuthTask.isSuccessful()) {
                                 deleteUserAccount(user);
                             } else {
-                                Toast.makeText(getContext(), "Authentication failed", Toast.LENGTH_SHORT).show();
+                                View view = getView();
+                                if (view != null) {
+                                    Snackbar.make(view, "Authentication failed", Snackbar.LENGTH_LONG).show();
+                                }
                             }
                         });
             }
@@ -189,6 +231,121 @@ public class ProfileFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void showReAuthGoogleUser() {
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user == null) {
+            return;
+        }
+
+        GetGoogleIdOption googleIdOption =
+                new GetGoogleIdOption.Builder()
+                        .setServerClientId(Constants.SERVER_CLIENT_ID)
+                        .setFilterByAuthorizedAccounts(false)
+                        .build();
+
+        GetCredentialRequest request =
+                new GetCredentialRequest.Builder()
+                        .addCredentialOption(googleIdOption)
+                        .build();
+
+        CredentialManager credentialManager =
+                CredentialManager.create(requireActivity());
+
+        credentialManager.getCredentialAsync(
+                requireActivity(),
+                request,
+                new CancellationSignal(),
+                Executors.newSingleThreadExecutor(),
+
+                new CredentialManagerCallback<
+                        GetCredentialResponse,
+                        GetCredentialException>() {
+
+                    @Override
+                    public void onResult(GetCredentialResponse result) {
+
+                        Credential credential =
+                                result.getCredential();
+
+                        if (credential instanceof CustomCredential) {
+
+                            CustomCredential customCredential =
+                                    (CustomCredential) credential;
+
+                            if (GoogleIdTokenCredential
+                                    .TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                                    .equals(customCredential.getType())) {
+
+                                GoogleIdTokenCredential googleCredential =
+                                        GoogleIdTokenCredential.createFrom(
+                                                customCredential.getData()
+                                        );
+
+                                String idToken =
+                                        googleCredential.getIdToken();
+
+                                // Now re-authenticate Firebase
+                                reAuthenticateFirebase(idToken);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(GetCredentialException e) {
+
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(
+                                        requireContext(),
+                                        "Google authentication failed",
+                                        Toast.LENGTH_SHORT
+                                ).show()
+                        );
+                    }
+                }
+        );
+    }
+
+    private void reAuthenticateFirebase(String idToken) {
+
+        FirebaseUser user =
+                FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            return;
+        }
+
+        AuthCredential credential =
+                GoogleAuthProvider.getCredential(idToken, null);
+
+        user.reauthenticate(credential)
+                .addOnSuccessListener(unused -> {
+
+                    View view = getView();
+
+                    Snackbar.make( view
+                            ,
+                            "Re-authentication successful",
+                            Snackbar.LENGTH_SHORT
+                    ).show();
+
+                    // NOW it is safe to delete
+                    deleteUserAccount(user);
+                    deleteAuthenticationAccount(user);
+                })
+                .addOnFailureListener(e -> {
+                    View view = getView();
+
+                    Snackbar.make( view
+                            ,
+                            "Re-authentication failed",
+                            Snackbar.LENGTH_SHORT
+                    ).show();
+                });
     }
 
     private void deleteUserAccount(FirebaseUser user) {
@@ -213,7 +370,10 @@ public class ProfileFragment extends Fragment {
         batch.commit().addOnSuccessListener(aVoid -> {
             deleteAuthenticationAccount(user);
         }).addOnFailureListener(e -> {
-            Toast.makeText(getContext(), "Failed to clear user data", Toast.LENGTH_SHORT).show();
+            View view = getView();
+            if (view != null) {
+                Snackbar.make(view, "Failed to clear user data", Snackbar.LENGTH_LONG).show();
+            }
         });
 
     }
@@ -222,11 +382,17 @@ public class ProfileFragment extends Fragment {
     private void deleteAuthenticationAccount(FirebaseUser user) {
         user.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(getContext(), "Account Completely Deleted", Toast.LENGTH_SHORT).show();
+                View view = getView();
+                if (view != null) {
+                    Snackbar.make(view, "Account Completely Deleted", Snackbar.LENGTH_SHORT).show();
+                }
                 navigateToSplash();
             } else {
                 String error = task.getException() != null ? task.getException().getMessage() : "Unknown error";
-                Toast.makeText(getContext(), "Auth deletion failed: " + error, Toast.LENGTH_SHORT).show();
+                View view = getView();
+                if (view != null) {
+                    Snackbar.make(view, "Auth deletion failed: " + error, Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -234,8 +400,10 @@ public class ProfileFragment extends Fragment {
     private void loadUserProfile() {
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
+            showLoading(true);
             db.collection("Users").document(user.getUid()).get()
                     .addOnSuccessListener(documentSnapshot -> {
+                        showLoading(false);
                         if (documentSnapshot.exists()) {
                             String username = documentSnapshot.getString("username");
                             String name = username != null ? username : documentSnapshot.getString("name");
@@ -254,13 +422,19 @@ public class ProfileFragment extends Fragment {
                             if (currentUser != null) {
                                 textName.setText(currentUser.getDisplayName() != null ? currentUser.getDisplayName() : "Guest User");
                                 String email = currentUser.getEmail();
-                                if (email != null) {
+                                if (email != null && textUsername != null) {
                                     textUsername.setText("@" + email.split("@")[0]);
                                 }
                             }
                         }
                     })
-                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> {
+                        showLoading(false);
+                        View view = getView();
+                        if (view != null) {
+                            Snackbar.make(view, "Failed to load profile", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
         }
     }
 
@@ -287,7 +461,10 @@ public class ProfileFragment extends Fragment {
         FirebaseUser user = auth.getCurrentUser();
         if (user == null) return;
 
-        Toast.makeText(getContext(), "Uploading...", Toast.LENGTH_SHORT).show();
+        View view = getView();
+        if (view != null) {
+            Snackbar.make(view, "Uploading...", Snackbar.LENGTH_SHORT).show();
+        }
 
         MediaManager.get().upload(imageUri)
                 .unsigned("User_profile") // Replace with your Cloudinary upload preset
@@ -305,13 +482,19 @@ public class ProfileFragment extends Fragment {
                                 .update("profileImage", downloadUrl)
                                 .addOnSuccessListener(aVoid -> {
                                     Picasso.get().load(downloadUrl).into(imageProfile);
-                                    Toast.makeText(getContext(), "Profile Image Updated", Toast.LENGTH_SHORT).show();
+                                    View v = getView();
+                                    if (v != null) {
+                                        Snackbar.make(v, "Profile Image Updated", Snackbar.LENGTH_SHORT).show();
+                                    }
                                 });
                     }
 
                     @Override
                     public void onError(String requestId, ErrorInfo error) {
-                        Toast.makeText(getContext(), "Upload failed: " + error.getDescription(), Toast.LENGTH_SHORT).show();
+                        View v = getView();
+                        if (v != null) {
+                            Snackbar.make(v, "Upload failed: " + error.getDescription(), Snackbar.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -346,10 +529,17 @@ public class ProfileFragment extends Fragment {
                     .update("username", newName)
                     .addOnSuccessListener(aVoid -> {
                         textName.setText(newName);
-                        textUsername.setText("@" + newName.toLowerCase().replace(" ", "_"));
-                        Toast.makeText(getContext(), "Name Updated", Toast.LENGTH_SHORT).show();
+                        View view = getView();
+                        if (view != null) {
+                            Snackbar.make(view, "Name Updated", Snackbar.LENGTH_SHORT).show();
+                        }
                     })
-                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> {
+                        View view = getView();
+                        if (view != null) {
+                            Snackbar.make(view, "Update failed", Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 
@@ -378,12 +568,13 @@ public class ProfileFragment extends Fragment {
             String newPassword = newPwInput.getText().toString().trim();
 
             if (currentPassword.isEmpty() || newPassword.isEmpty()) {
-                Toast.makeText(getContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                if (currentPassword.isEmpty()) currentPwInput.setError("Required");
+                if (newPassword.isEmpty()) newPwInput.setError("Required");
                 return;
             }
 
             if (newPassword.length() < 6) {
-                Toast.makeText(getContext(), "New password too short", Toast.LENGTH_SHORT).show();
+                newPwInput.setError("New password too short");
                 return;
             }
 
@@ -395,13 +586,20 @@ public class ProfileFragment extends Fragment {
                             if (reAuthTask.isSuccessful()) {
                                 user.updatePassword(newPassword).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(getContext(), "Password Changed", Toast.LENGTH_SHORT).show();
+                                        View view = getView();
+                                        if (view != null) {
+                                            Snackbar.make(view, "Password Changed", Snackbar.LENGTH_SHORT).show();
+                                        }
                                     } else {
-                                        Toast.makeText(getContext(), "Error: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                        String msg = task.getException() != null ? task.getException().getMessage() : "Error changing password";
+                                        View view = getView();
+                                        if (view != null) {
+                                            Snackbar.make(view, msg, Snackbar.LENGTH_LONG).show();
+                                        }
                                     }
                                 });
                             } else {
-                                Toast.makeText(getContext(), "Current password incorrect", Toast.LENGTH_SHORT).show();
+                                currentPwInput.setError("Current password incorrect");
                             }
                         });
             }
@@ -409,6 +607,27 @@ public class ProfileFragment extends Fragment {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void setUpUI(){
+        if (isGoogleUser()){
+            changePWCtn.setVisibility(View.GONE);
+        }else {
+            changePWCtn.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isGoogleUser(){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        boolean isGUser= false;
+        for (UserInfo profile : user.getProviderData()){
+            if(profile.getProviderId().equals("google.com")){
+                isGUser = true;
+            }
+        }
+
+        return isGUser;
     }
 
     private void navigateToSplash() {

@@ -11,6 +11,8 @@ public class Movie extends MediaItem {
 
     @SerializedName("runtime")
     private int runtime;
+    @SerializedName("video")
+    private String video;
 
     public int getRuntime() {
         return runtime;
@@ -20,5 +22,8 @@ public class Movie extends MediaItem {
     // but it's better to use getReleaseDate() from MediaItem
     public String getRelease_date() {
         return getReleaseDate();
+    }
+    public String getVideo() {
+        return video;
     }
 }

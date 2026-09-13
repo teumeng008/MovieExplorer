@@ -29,6 +29,10 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled =
+            true //Desugaring is a trick done by the Android build tool.
+        // When you build your app, Android Studio automatically injects a small compatibility library that translates modern Java features (like LocalDate) into code that older Android versions can understand.
+
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -44,11 +48,14 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
     implementation(libs.activity.ktx)
     implementation(libs.annotation)
     implementation(libs.appcompat)
     implementation(libs.coordinatorlayout)
     implementation(libs.gridlayout)
+    implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.material)
@@ -69,6 +76,11 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation(libs.viewpager2)
+
+    // Dependencies for Google Sign-In & Credential Manager
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
 
     implementation("me.xdrop:fuzzywuzzy:1.4.0")
 

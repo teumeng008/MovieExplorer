@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,11 +31,13 @@ import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.adapter.MovieOrTvAdapter;
 import com.rupp.movieexplorer.api.MovieApi;
 import com.rupp.movieexplorer.api.RetrofitClient;
+import com.rupp.movieexplorer.helperClass.GenresList;
 import com.rupp.movieexplorer.model.FilterData;
 import com.rupp.movieexplorer.viewModel.FilterViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,7 @@ public class DiscoverFragment extends Fragment {
     private ChipGroup chipGroup, ratingChipGroup;
     private TabLayoutMediator tabLayoutMediator;
     private MaterialButton resetBtn, applyBtn;
+    private TextView latestYear;
     public DiscoverFragment() {
         // Required empty public constructor
     }
@@ -70,6 +74,9 @@ public class DiscoverFragment extends Fragment {
         setupSwitches(view);
         filter();
 
+        yearSwitch.setChecked(false);
+        ratingSwitch.setChecked(false);
+
         return view;
     }
 
@@ -80,6 +87,7 @@ public class DiscoverFragment extends Fragment {
 
         String currentType = (viewPager2.getCurrentItem() == 1) ? "tv" : "movie";
         setUpDynamicChipItem(currentType);
+
     }
 
     private void initViews(View view) {
@@ -88,6 +96,7 @@ public class DiscoverFragment extends Fragment {
         ratingChipGroup = view.findViewById(R.id.ratingChipGroup);
         slider = view.findViewById(R.id.yearSlider);
         yearValueText = view.findViewById(R.id.yearValueText);
+        latestYear = view.findViewById(R.id.latestYear);
 
         genreSwitch = view.findViewById(R.id.genreSwitch);
         yearSwitch = view.findViewById(R.id.yearSwitch);
@@ -178,6 +187,15 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void dynamicYearText() {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        latestYear.setText(String.valueOf(currentYear));
+        slider.setValueTo(currentYear);
+        slider.setValue(currentYear);
+
+        yearValueText.setText(String.valueOf(currentYear));
+        yearValueText.setHint(String.valueOf(currentYear));
+
         slider.addOnChangeListener((sliderInstance, value, fromUser) -> {
             if (fromUser) {
                 yearValueText.setText(String.valueOf((int) value));
@@ -209,44 +227,7 @@ public class DiscoverFragment extends Fragment {
         // LinkedHashMap preserves insertion order (Alphabetical)
         Map<String, Integer> genres = new LinkedHashMap<>();
 
-        if ("tv".equals(type)) {
-            genres.put("Action & Adventure", 10759);
-            genres.put("Animation", 16);
-            genres.put("Comedy", 35);
-            genres.put("Crime", 80);
-            genres.put("Documentary", 99);
-            genres.put("Drama", 18);
-            genres.put("Family", 10751);
-            genres.put("Kids", 10762);
-            genres.put("Mystery", 9648);
-            genres.put("News", 10763);
-            genres.put("Reality", 10764);
-            genres.put("Sci-Fi & Fantasy", 10765);
-            genres.put("Soap", 10766);
-            genres.put("Talk", 10767);
-            genres.put("War & Politics", 10768);
-            genres.put("Western", 37);
-        } else {
-            genres.put("Action", 28);
-            genres.put("Adventure", 12);
-            genres.put("Animation", 16);
-            genres.put("Comedy", 35);
-            genres.put("Crime", 80);
-            genres.put("Documentary", 99);
-            genres.put("Drama", 18);
-            genres.put("Family", 10751);
-            genres.put("Fantasy", 14);
-            genres.put("History", 36);
-            genres.put("Horror", 27);
-            genres.put("Music", 10402);
-            genres.put("Mystery", 9648);
-            genres.put("Romance", 10749);
-            genres.put("Science Fiction", 878);
-            genres.put("TV Movie", 10770);
-            genres.put("Thriller", 53);
-            genres.put("War", 10752);
-            genres.put("Western", 37);
-        }
+        genres = GenresList.getGenres(type);
 
         FilterData data = "tv".equals(type) ? filterViewModel.getTvFilters().getValue() : filterViewModel.getMovieFilters().getValue();
         String savedGenres = data != null ? data.getGenres() : null;
@@ -276,6 +257,16 @@ public class DiscoverFragment extends Fragment {
             genreSwitch.setChecked(false);
             yearSwitch.setChecked(false);
             ratingSwitch.setChecked(false);
+
+            if(viewPager2.getCurrentItem() == 1){
+                filterViewModel.setTvFilters(null, null, null);
+            }else {
+                filterViewModel.setMovieFilters(null, null, null);
+            }
+
+            if(drawerLayout != null){
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
         });
 
         applyBtn.setOnClickListener(v -> {

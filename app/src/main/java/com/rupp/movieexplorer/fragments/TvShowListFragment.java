@@ -125,6 +125,7 @@ public class TvShowListFragment extends Fragment {
                 } else {
                     Log.d("Error_TV_FETCH", "Response unsuccessful or empty body");
                 }
+
             }
 
             @Override

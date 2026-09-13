@@ -4,14 +4,12 @@ import com.rupp.movieexplorer.model.MediaItem;
 import com.rupp.movieexplorer.model.Movie;
 import com.rupp.movieexplorer.model.MovieResponse;
 import com.rupp.movieexplorer.model.MultiResponse;
-import com.rupp.movieexplorer.model.People;
-import com.rupp.movieexplorer.model.Season;
+import com.rupp.movieexplorer.model.PersonDetails;
+import com.rupp.movieexplorer.model.PersonInfo;
 import com.rupp.movieexplorer.model.SeasonDetail;
 import com.rupp.movieexplorer.model.TVResponse;
 import com.rupp.movieexplorer.model.TVShow;
 import com.rupp.movieexplorer.model.VideoResponse;
-
-import org.checkerframework.common.reflection.qual.GetClass;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -172,4 +170,15 @@ public interface MovieApi {
             @Query("api_key") String apiKey
     );
 
+    @GET("person/{person_id}")
+    Call<PersonInfo> getPersonInfo(
+            @Path("person_id") int id,
+            @Query("api_key") String apiKey
+    );
+
+    @GET("person/{person_id}/combined_credits")
+    Call<PersonInfo> getPersonCredits(
+            @Path("person_id") int id,
+            @Query("api_key") String apiKey
+    );
 }

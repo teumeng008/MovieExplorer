@@ -4,10 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
-    android:background="@drawable/fake_blur_bg"
+    android:background="@drawable/component_bg"
+    android:backgroundTint="@color/card_text"
+    android:backgroundTintMode="add"
+    android:elevation="20dp"
     android:gravity="center"
     android:orientation="vertical"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -17,165 +20,211 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".fragments.SignInFragment">
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="30dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="30dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:fontFamily="sans-serif-black"
-                android:text="Sign In"
-                android:textAllCaps="false"
-                android:textColor="@color/gray"
-                android:textSize="35sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:textColorHint="@color/light_gray"
-                app:boxStrokeColor="@color/card_bg"
-                app:hintTextColor="@color/light_gray">
+                android:layout_height="match_parent">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/signInUserNameEditText"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="30dp">
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="30dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:fontFamily="sans-serif-black"
+                        android:text="Sign In"
+                        android:textAllCaps="false"
+                        android:textColor="@color/gray"
+                        android:textSize="35sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/signInUserNameLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:textColorHint="@color/light_gray"
+                        app:boxStrokeColor="@color/card_bg"
+                        app:errorEnabled="true"
+                        app:hintTextColor="@color/light_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/signInUserNameEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Name"
+                            android:textColor="@color/card_bg" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/signInEmailLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:textColorHint="@color/light_gray"
+                        app:boxStrokeColor="@color/card_bg"
+                        app:errorEnabled="true"
+                        app:hintTextColor="@color/light_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/signInEmailEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Email"
+                            android:textColor="@color/card_bg" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/signInPasswordLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:textColorHint="@color/light_gray"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/card_bg"
+                        app:endIconMode="password_toggle"
+                        app:endIconTint="@color/light_gray"
+                        app:errorEnabled="true"
+                        app:hintTextColor="@color/light_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/signInPasswordEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Password"
+                            android:inputType="text|textPassword"
+                            android:textColor="@color/card_bg" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/signInConfirmPasswordLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:textColorHint="@color/light_gray"
+                        app:boxBackgroundMode="outline"
+                        app:boxStrokeColor="@color/card_bg"
+                        app:endIconMode="password_toggle"
+                        app:endIconTint="@color/light_gray"
+                        app:errorEnabled="true"
+                        app:hintTextColor="@color/light_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/signInConfirmPasswordEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Confirm Password"
+                            android:inputType="text|textPassword"
+                            android:textColor="@color/card_bg" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/signInButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/rounded_bg"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:text="sign in"
+                        android:textColor="@color/card_bg"
+                        android:textSize="16sp"
+                        app:backgroundTint="@color/card_text" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="have an account? "
+                            android:textColor="@color/light_gray" />
+
+                        <TextView
+                            android:id="@+id/LoginText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif"
+                            android:text="Log In"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/card_bg"
+                            android:textStyle="bold|italic"
+                            android:typeface="sans" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:cardBackgroundColor="@android:color/transparent"
+                            app:cardCornerRadius="100dp">
+
+                            <ImageButton
+                                android:id="@+id/googleBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/card_bg"
+                                android:elevation="20dp"
+                                android:padding="12dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/googleg_standard_color_18" />
+                        </androidx.cardview.widget.CardView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/loading_overlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/black_overlay"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/loading_progress"
+                    style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name"
-                    android:textColor="@color/card_bg" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_gravity="top"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/card_bg"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:progressTint="@color/card_bg"
+                    android:visibility="gone" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:textColorHint="@color/light_gray"
-                app:boxStrokeColor="@color/card_bg"
-                app:hintTextColor="@color/light_gray">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/signInEmailEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Email"
-                    android:textColor="@color/card_bg" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/signInPasswordLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:textColorHint="@color/light_gray"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/card_bg"
-                app:endIconMode="password_toggle"
-                app:endIconTint="@color/light_gray"
-                app:hintTextColor="@color/light_gray">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/signInPasswordEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="text|textPassword"
-                    android:textColor="@color/card_bg" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/signInConfirmPasswordLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:textColorHint="@color/light_gray"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/card_bg"
-                app:endIconMode="password_toggle"
-                app:endIconTint="@color/light_gray"
-                app:hintTextColor="@color/light_gray">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/signInConfirmPasswordEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Confirm Password"
-                    android:inputType="text|textPassword"
-                    android:textColor="@color/card_bg" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/signInButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/rounded_bg"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:text="sign in"
-                android:textColor="@color/card_bg"
-                android:textSize="16sp"
-                app:backgroundTint="@color/card_text" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="have an account? "
-                    android:textColor="@color/light_gray" />
-
-                <TextView
-                    android:id="@+id/LoginText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="Log In"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/card_bg"
-                    android:textStyle="bold|italic"
-                    android:typeface="sans" />
-
-            </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
+    </ScrollView>
 
-        <View
-            android:id="@+id/loading_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/black_overlay"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="gone" />
-
-        <ProgressBar
-            android:id="@+id/loading_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/card_bg"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:progressTint="@color/card_bg"
-            android:visibility="gone" />
-    </FrameLayout>
 </LinearLayout>
 
 

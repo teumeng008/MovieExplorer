@@ -35,7 +35,7 @@ public class WatchlistFragment extends Fragment {
         viewPager2.setAdapter(viewPagerAdapter);
         viewPager2.setSaveEnabled(false);
 
-        new TabLayoutMediator(tabLayout,viewPager2,(tab,position) -> {
+        new TabLayoutMediator(tabLayout,viewPager2,(tab,position) -> { // it's tracking position and viewPager2 use viewPagerAdapter to change the page as which item in tabLayout is being active.
             switch (position){
                 case 0:
                     tab.setText("Watch Later");
@@ -43,6 +43,8 @@ public class WatchlistFragment extends Fragment {
                 case 1:
                     tab.setText("Favorite");
                     break;
+                case 2:
+                    tab.setText("Person");
             }
         }).attach();
         return view;

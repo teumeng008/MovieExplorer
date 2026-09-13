@@ -114,6 +114,7 @@ public class SeasonEpActivity extends AppCompatActivity {
                     episodes.addAll(Results);
                     epAdapter.notifyDataSetChanged();
                 }
+
             }
 
             @Override
@@ -134,6 +135,7 @@ public class SeasonEpActivity extends AppCompatActivity {
                     episodes.get(position).setVideos(videos);
                     epAdapter.notifyItemChanged(position);
                 }
+
             }
 
             @Override
@@ -165,6 +167,7 @@ public class SeasonEpActivity extends AppCompatActivity {
                     }
                     seasonTrailerAdapter.notifyDataSetChanged();
                 }
+
             }
 
             @Override

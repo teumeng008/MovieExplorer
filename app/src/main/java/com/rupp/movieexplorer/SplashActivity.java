@@ -21,10 +21,10 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs =
-                getSharedPreferences("user", MODE_PRIVATE);
-
-        prefs.edit().clear().apply();
+//        SharedPreferences prefs =
+//                getSharedPreferences("user", MODE_PRIVATE);
+//
+//        prefs.edit().clear().apply();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 

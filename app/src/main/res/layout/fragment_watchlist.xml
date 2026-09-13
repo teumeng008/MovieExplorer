@@ -34,18 +34,7 @@
             app:tabMode="fixed"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/bg_component"
-            app:tabTextColor="@color/card_bg">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Watch Later" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Favorite" />
-        </com.google.android.material.tabs.TabLayout>
+            app:tabTextColor="@color/card_bg"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/WatchListViewPager2"

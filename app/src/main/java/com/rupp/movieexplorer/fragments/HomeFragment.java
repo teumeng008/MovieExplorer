@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.rupp.movieexplorer.Constants;
 import com.rupp.movieexplorer.MovieDetailActivity;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.adapter.CarouselAdapter;
@@ -49,8 +50,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
-
-    private String apiKey = "9248253c09ac61d8b459b1b599ab133b";
 
 
     private List<String> items = Arrays.asList("Movie","TV Show");
@@ -165,7 +164,6 @@ public class HomeFragment extends Fragment {
 
         dropdown.setOnItemClickListener((parent,v,position,id)->{
             selected = parent.getItemAtPosition(position).toString();
-            Toast.makeText(requireContext(),selected,Toast.LENGTH_SHORT).show();
             mediaFetch(selected);
         });
         PopularRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -224,7 +222,7 @@ public class HomeFragment extends Fragment {
     private void fetchPopularMovies() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getPopularMovies(apiKey).enqueue(new Callback<MovieResponse>() {
+        api.getPopularMovies(Constants.API_KEY).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 
@@ -232,16 +230,17 @@ public class HomeFragment extends Fragment {
 
                 if (!response.isSuccessful() || response.body() == null) {
                     Log.e("POPULAR_ERROR", "Response failed");
-                    return;
+
                 }
 
                 List<Movie> list = response.body().getResults();
-                if (list == null) return;
+
 
                 PopularRecyclerView.setAdapter(PopularAdapter);
                 popularMovies.clear();
                 popularMovies.addAll(list);
                 PopularAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -253,7 +252,7 @@ public class HomeFragment extends Fragment {
     private void fetchPopularTv() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getPopularTVShows(apiKey).enqueue(new Callback<TVResponse>() {
+        api.getPopularTVShows(Constants.API_KEY).enqueue(new Callback<TVResponse>() {
             @Override
             public void onResponse(Call<TVResponse> call, Response<TVResponse> response) {
 
@@ -261,16 +260,17 @@ public class HomeFragment extends Fragment {
 
                 if (!response.isSuccessful() || response.body() == null) {
                     Log.e("POPULAR_ERROR", "Response failed");
-                    return;
+
                 }
 
                 List<TVShow> list = response.body().getResults();
-                if (list == null) return;
+
 
                 PopularRecyclerView.setAdapter(PopularTvAdapter);
                 popularTv.clear();
                 popularTv.addAll(list);
                 PopularTvAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -284,19 +284,20 @@ public class HomeFragment extends Fragment {
         NowPlayingText.setText("Now Playing");
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getNowPlayingMovies(apiKey).enqueue(new Callback<MovieResponse>() {
+        api.getNowPlayingMovies(Constants.API_KEY).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+
 
                 List<Movie> list = response.body().getResults();
-                if (list == null) return;
+
 
                 NowPlayingRecyclerView.setAdapter(NowPlayingAdapter);
                 nowPlayingMovies.clear();
                 nowPlayingMovies.addAll(list);
                 NowPlayingAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -309,19 +310,20 @@ public class HomeFragment extends Fragment {
         NowPlayingText.setText("On The Air");
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getOnTheAirTVShows(apiKey).enqueue(new Callback<TVResponse>() {
+        api.getOnTheAirTVShows(Constants.API_KEY).enqueue(new Callback<TVResponse>() {
             @Override
             public void onResponse(Call<TVResponse> call, Response<TVResponse> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+
 
                 List<TVShow> list = response.body().getResults();
-                if (list == null) return;
+
 
                 NowPlayingRecyclerView.setAdapter(OnTheAirTvAdapter);
                 OnTheAirTv.clear();
                 OnTheAirTv.addAll(list);
                 OnTheAirTvAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -334,19 +336,20 @@ public class HomeFragment extends Fragment {
     private void fetchTopRatingMovies() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getTopRatedMovies(apiKey).enqueue(new Callback<MovieResponse>() {
+        api.getTopRatedMovies(Constants.API_KEY).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+
 
                 List<Movie> list = response.body().getResults();
-                if (list == null) return;
+
 
                 TopRatingRecyclerView.setAdapter(TopRatingAdapter);
                 topRatedMovies.clear();
                 topRatedMovies.addAll(list);
                 TopRatingAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -358,19 +361,20 @@ public class HomeFragment extends Fragment {
     private void fetchTopRatingTv() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getTopRatedTVShows(apiKey).enqueue(new Callback<TVResponse>() {
+        api.getTopRatedTVShows(Constants.API_KEY).enqueue(new Callback<TVResponse>() {
             @Override
             public void onResponse(Call<TVResponse> call, Response<TVResponse> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+
 
                 List<TVShow> list = response.body().getResults();
-                if (list == null) return;
+
 
                 TopRatingRecyclerView.setAdapter(TopRatingTvAdapter);
                 topRatedTv.clear();
                 topRatedTv.addAll(list);
                 TopRatingTvAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -386,19 +390,19 @@ public class HomeFragment extends Fragment {
 
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        api.getUpcomingKHMovies(apiKey, "KH", "primary_release_date.asc", today)
+        api.getUpcomingKHMovies(Constants.API_KEY, "KH", "primary_release_date.asc", today)
                 .enqueue(new Callback<MovieResponse>() {
                     @Override
                     public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 
-                        if (!response.isSuccessful() || response.body() == null) return;
 
                         List<Movie> list = response.body().getResults();
-                        if (list == null) return;
+
                         UpComingRecyclerView.setAdapter(UpComingAdapter);
                         upcomingMovies.clear();
                         upcomingMovies.addAll(list);
                         UpComingAdapter.notifyDataSetChanged();
+
                     }
 
                     @Override
@@ -412,19 +416,20 @@ public class HomeFragment extends Fragment {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
 
-        api.getAiringTodayTVShows(apiKey)
+        api.getAiringTodayTVShows(Constants.API_KEY)
                 .enqueue(new Callback<TVResponse>() {
                     @Override
                     public void onResponse(Call<TVResponse> call, Response<TVResponse> response) {
 
-                        if (!response.isSuccessful() || response.body() == null) return;
+
 
                         List<TVShow> list = response.body().getResults();
-                        if (list == null) return;
+
                         UpComingRecyclerView.setAdapter(AiringTvAdapter);
                         AiringTv.clear();
                         AiringTv.addAll(list);
                         AiringTvAdapter.notifyDataSetChanged();
+
                     }
 
                     @Override
@@ -454,14 +459,14 @@ public class HomeFragment extends Fragment {
     private void fetch5PopularMovies() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getPopularMovies(apiKey).enqueue(new Callback<MovieResponse>() {
+        api.getPopularMovies(Constants.API_KEY).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+
 
                 List<Movie> list = response.body().getResults();
-                if (list == null) return;
+
 
                 Movies.clear();
 
@@ -474,6 +479,7 @@ public class HomeFragment extends Fragment {
                 if (!Movies.isEmpty()) {
                     startSlider();
                 }
+
             }
 
             @Override
@@ -485,14 +491,13 @@ public class HomeFragment extends Fragment {
     private void fetch5PopularTv() {
         MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
 
-        api.getPopularTVShows(apiKey).enqueue(new Callback<TVResponse>() {
+        api.getPopularTVShows(Constants.API_KEY).enqueue(new Callback<TVResponse>() {
             @Override
             public void onResponse(Call<TVResponse> call, Response<TVResponse> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+
 
                 List<TVShow> list = response.body().getResults();
-                if (list == null) return;
 
                 Tv.clear();
 
@@ -505,6 +510,7 @@ public class HomeFragment extends Fragment {
                 if (!Tv.isEmpty()) {
                     startSlider();
                 }
+
             }
 
             @Override

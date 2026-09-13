@@ -5,7 +5,6 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1D1D1D"
     tools:context=".fragments.DiscoverFragment"
     tools:openDrawer="end">
 
@@ -241,7 +240,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:stepSize="1"
-                                android:value="2024"
                                 android:valueFrom="1990"
                                 android:valueTo="2025"
                                 app:labelBehavior="floating"
@@ -281,6 +279,7 @@
                                 android:textSize="12sp" />
 
                             <TextView
+                                android:id="@+id/latestYear"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/year_end"

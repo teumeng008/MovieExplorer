@@ -24,6 +24,8 @@ public class TVShow extends MediaItem {
     @SerializedName("number_of_episodes")
     private int number_of_episodes;
 
+    @SerializedName("type")
+    private String type;
     // Getters and Setters...
 
     public int getVoteCount() {
@@ -48,5 +50,9 @@ public class TVShow extends MediaItem {
 
     public String getOriginalName() {
         return originalName;
+    }
+
+    public String getType() {
+        return type;
     }
 }

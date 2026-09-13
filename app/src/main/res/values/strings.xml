@@ -35,6 +35,13 @@
     <string name="year_current">2024</string>
     <string name="year_end">2025</string>
 
+    <string name="biography">Biography</string>
+    <string name="also_known_as">Also Known As</string>
+    <string name="acting_credits">Acting Credits</string>
+    <string name="birthday_label">Birthday</string>
+    <string name="deathday_label">Deathday</string>
+    <string name="birth_place_label">Birth Place</string>
+
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -71,4 +78,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="crew_credits">Crew Credits</string>
 </resources>

@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import com.google.android.material.snackbar.Snackbar;
 import com.rupp.movieexplorer.adapter.LoadingPeopleCardAdapter;
 import com.rupp.movieexplorer.adapter.LoadingSeasonCardAdapter;
 import com.rupp.movieexplorer.adapter.PeopleCardAdapter;
@@ -143,8 +144,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         trailerRecycler = findViewById(R.id.trailerRecycler);
 
         videoCardAdapter = new VideoCardAdapter(videos);
-        castAdapter = new PeopleCardAdapter(castList);
-        crewAdapter = new PeopleCardAdapter(crewList);
+        castAdapter = new PeopleCardAdapter(castList, cast -> {
+            openPersonDetail(cast);
+        });
+        crewAdapter = new PeopleCardAdapter(crewList, crew -> {
+            openPersonDetail(crew);
+        });
         seasonAdapter = new SeasonCardAdapter(seasons, season -> {
             openSeasonDetail(season);
         });
@@ -231,26 +236,26 @@ public class MovieDetailActivity extends AppCompatActivity {
         String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FavoriteItem favoriteItem = new  FavoriteItem(id,type,currentTitle,currentPosterPath,currentRating);
         FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("favorites").document(String.valueOf(id)).set(favoriteItem).addOnSuccessListener(unused -> {
-            Toast.makeText(this, "Added to favorites", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Added to favorites", Snackbar.LENGTH_SHORT).show();
         });
     }
     private void removeFavorite(){
         String userUID =FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("favorites").document(String.valueOf(id)).delete().addOnSuccessListener(unused -> {
-            Toast.makeText(this, "Removed from favorites", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Removed from favorites", Snackbar.LENGTH_SHORT).show();
         });
     }
     private void addWatchlist(){
         String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FavoriteItem watchlistItem = new FavoriteItem(id,type,currentTitle,currentPosterPath,currentRating);
         FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("watchlist").document(String.valueOf(id)).set(watchlistItem).addOnSuccessListener( unused -> {
-            Toast.makeText(this,"Added to Watchlist",Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Added to Watchlist", Snackbar.LENGTH_SHORT).show();
         });
     }
     private void removeWatchlist(){
         String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("Users").document(userUID).collection("watchlist").document(String.valueOf(id)).delete().addOnSuccessListener( unused -> {
-            Toast.makeText(this,"Removed from Watchlist",Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(android.R.id.content), "Removed from Watchlist", Snackbar.LENGTH_SHORT).show();
         });
     }
 
@@ -276,7 +281,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<TVShow> call, Response<TVShow> response) {
                     TVShow result = response.body();
-                    if (result == null) return;
                     ShowLoading(false);
 
                     //store data for Fav list
@@ -326,6 +330,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             .load("https://image.tmdb.org/t/p/w780" + result.getBackdropPath())
                             .placeholder(R.drawable.rounded_bg)
                             .into(backdrop);
+
                 }
 
                 @Override
@@ -342,7 +347,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Movie> call, Response<Movie> response) {
                     Movie result = response.body();
-                    if (result == null) return;
+
                     ShowLoading(false);
 
                     //store data for Fav list
@@ -400,6 +405,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                             .load("https://image.tmdb.org/t/p/w780" + result.getBackdropPath())
                             .placeholder(R.drawable.rounded_bg)
                             .into(backdrop);
+
                 }
 
                 @Override
@@ -426,6 +432,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     castList.clear();
                     castList.addAll(peoples);
                     castAdapter.notifyDataSetChanged();
+
                 }
 
                 @Override
@@ -440,7 +447,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<TVShow> call, Response<TVShow> response) {
                     crewRecyclerView.setAdapter(crewAdapter);
-                    List<Creator> creator = response.body().getCreator();
+                    List<Creator> creator = response.body().getCreator(); // the reason why it can call getCreator() is because TVShow is the extend of mediaItem model which has geCreator() method.
 
 
                     if(creator.isEmpty() || creator == null){
@@ -450,14 +457,16 @@ public class MovieDetailActivity extends AppCompatActivity {
                     }
 
                     crewList.clear();
-                   for(Creator c : creator){
-                       People selected = new People();
-                       selected.setProfile_image(c.getProfile_path());
-                       selected.setName(c.getName());
-                       crewList.add(selected);
+                   for(Creator c : creator){ // creator can be more than 1 that why we do loop
+                       People selected = new People();//                ---
+                       selected.setId(c.getId());//                         |
+                       selected.setProfile_image(c.getProfile_path());//    |-> select every info of Creator and set it on People model because adapter is only accept List<People>
+                       selected.setName(c.getName());//                     |
+                       crewList.add(selected);//                         ---
                    }
                    crewAdapter.notifyDataSetChanged();
 //                   Log.d("creator",String.valueOf(result.size()));
+
                 }
 
                 @Override
@@ -474,7 +483,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 public void onResponse(Call<MediaItem> call,
                                        Response<MediaItem> response) {
 
-                    if (response.body() == null) return;
+
                     castRecyclerView.setAdapter(castAdapter);
                     crewRecyclerView.setAdapter(crewAdapter);
                     castList.clear();
@@ -493,6 +502,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                     castAdapter.notifyDataSetChanged();
                     crewAdapter.notifyDataSetChanged();
+
                 }
 
                 @Override
@@ -502,92 +512,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             });
         }
     }
-
-//    private void setupSwipeDownDetector(){
-//        int baseHeight = (int) (244 * getResources().getDisplayMetrics().density); // Initial 244dp
-//        int maxTriggerHeight = (int) (300 * getResources().getDisplayMetrics().density); // Max stretch limit
-//
-//// Use an array or object wrapper to keep track of values across the anonymous listener
-//        final float[] yDown = {0f};
-//        final boolean[] isPullingDown = {false};
-//
-//        mainLayout.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                // Check if the scroll view is scrolled all the way to the top
-//                if (mainLayout.getScrollY() == 0) {
-//                    switch (event.getAction()) {
-//                        case MotionEvent.ACTION_DOWN:
-//                            yDown[0] = event.getRawY();
-//                            isPullingDown[0] = false;
-//                            break;
-//
-//                        case MotionEvent.ACTION_MOVE:
-//                            float deltaY = event.getRawY() - yDown[0];
-//
-//                            // If the user drags downward from the top
-//                            if (deltaY > 0) {
-//                                isPullingDown[0] = true;
-//
-//                                // 0.4f adds a sleek resistance feel to the pull gesture
-//                                int newHeight = baseHeight + (int) (deltaY * 0.4f);
-//                                int constrainedHeight = Math.min(newHeight, maxTriggerHeight);
-//
-//                                // Apply the new height to your container layout
-//                                android.view.ViewGroup.LayoutParams params = videoTrailerCtn.getLayoutParams();
-//                                params.height = constrainedHeight;
-//                                videoTrailerCtn.setLayoutParams(params);
-//
-//                                return true; // Intercept event
-//                            }
-//                            break;
-//
-//                        case MotionEvent.ACTION_UP:
-//                        case MotionEvent.ACTION_CANCEL:
-//                            if (isPullingDown[0]) {
-//                                int currentHeight = videoTrailerCtn.getLayoutParams().height;
-//
-//                                // Check if they hit the stretch threshold (close to max limit)
-//                                if (currentHeight >= maxTriggerHeight - 40) {
-//                                    // 🎉 Trigger your video player stream or method here!
-//                                    playFullTrailerVideo();
-//                                }
-//
-//                                // Animate back to its base 244dp state
-//                                ValueAnimator animator = ValueAnimator.ofInt(currentHeight, baseHeight);
-//                                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                                    @Override
-//                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                                        android.view.ViewGroup.LayoutParams params = videoTrailerCtn.getLayoutParams();
-//                                        params.height = (int) valueAnimator.getAnimatedValue();
-//                                        videoTrailerCtn.setLayoutParams(params);
-//                                    }
-//                                });
-//                                animator.setDuration(300);
-//                                animator.setInterpolator(new DecelerateInterpolator());
-//                                animator.start();
-//
-//                                isPullingDown[0] = false;
-//                                return true;
-//                            }
-//                            break;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
-//    }
-
-
-// private void trailerRedirector(String key){
-//    if(key != null){
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + key));
-//        startActivity(intent);
-//    }else {
-//        Toast.makeText(this,"not available", Toast.LENGTH_SHORT).show();
-//    }
-//
-// }
 
  private void keyTrailerFetch(){
      MovieApi api = RetrofitClient.getRetrofit().create(MovieApi.class);
@@ -617,6 +541,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                  videoCardAdapter.notifyDataSetChanged();
              }
+
          }
 
          @Override
@@ -631,5 +556,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     intent.putExtra("id",id);
     intent.putExtra("season_number", season.getSeason_number());
     startActivity(intent);
+ }
+
+ private void openPersonDetail(People people){
+     Intent intent = new Intent(this, PersonDetailActivity.class);
+     intent.putExtra("Person_id", people.getId());
+     startActivity(intent);
  }
 }

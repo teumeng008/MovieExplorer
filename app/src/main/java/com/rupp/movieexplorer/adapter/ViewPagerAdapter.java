@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.rupp.movieexplorer.fragments.FavoritePersonFragment;
 import com.rupp.movieexplorer.fragments.FavoritesFragment;
 import com.rupp.movieexplorer.fragments.SavedFragment;
 
@@ -25,6 +26,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
                 return new SavedFragment();
             case 1:
                 return new FavoritesFragment();
+            case 2:
+                return new FavoritePersonFragment();
             default:
                 return new SavedFragment();
         }
@@ -32,6 +35,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }
