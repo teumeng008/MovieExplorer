@@ -18,7 +18,7 @@
     app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:context=".fragments.SignInFragment">
+    tools:context=".fragments.SignUpFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                         android:layout_margin="30dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:fontFamily="sans-serif-black"
-                        android:text="Sign In"
+                        android:text="Sign Up"
                         android:textAllCaps="false"
                         android:textColor="@color/gray"
                         android:textSize="35sp"
@@ -140,7 +140,7 @@
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/rounded_bg"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:text="sign in"
+                        android:text="sign up"
                         android:textColor="@color/card_bg"
                         android:textSize="16sp"
                         app:backgroundTint="@color/card_text" />

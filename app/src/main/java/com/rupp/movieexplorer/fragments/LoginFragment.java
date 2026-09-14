@@ -6,9 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -24,8 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.SplashActivity;
 import com.rupp.movieexplorer.helperClass.GoogleSignUpOrLogin;
-
-import java.time.Instant;
 
 public class LoginFragment extends Fragment {
     TextView SignInText;
@@ -100,7 +96,7 @@ public class LoginFragment extends Fragment {
         });
 
         SignInText.setOnClickListener(v ->{
-            Fragment SignInFragment = new SignInFragment();
+            Fragment SignInFragment = new SignUpFragment();
             requireActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right).replace(R.id.AuthFragmentContainer,SignInFragment).commit();
         });
 
