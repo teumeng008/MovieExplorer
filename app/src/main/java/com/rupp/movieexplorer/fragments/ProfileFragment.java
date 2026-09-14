@@ -47,7 +47,10 @@ import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.rupp.movieexplorer.Constants;
 import com.rupp.movieexplorer.R;
 import com.rupp.movieexplorer.SplashActivity;
@@ -352,30 +355,39 @@ public class ProfileFragment extends Fragment {
         String uid = user.getUid();
         DocumentReference userDocRef = db.collection("Users").document(uid);
 
-        WriteBatch batch = db.batch();
+        Task<QuerySnapshot> favoritesTask = userDocRef.collection("favorites").get();
+        Task<QuerySnapshot> watchlistTask = userDocRef.collection("watchlist").get();
 
-        userDocRef.collection("favorites").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                batch.delete(doc.getReference());
+        Tasks.whenAll(favoritesTask, watchlistTask).addOnSuccessListener(aVoid -> {
+            WriteBatch batch = db.batch();
+
+            if (favoritesTask.isSuccessful() && favoritesTask.getResult() != null) {
+                for (QueryDocumentSnapshot doc : favoritesTask.getResult()){
+                    batch.delete(doc.getReference());
+                }
             }
-        });
 
-        userDocRef.collection("watchlist").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            for(QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                batch.delete(doc.getReference());
+            if (watchlistTask.isSuccessful() && watchlistTask.getResult() != null) {
+                for(QueryDocumentSnapshot doc : watchlistTask.getResult()) {
+                    batch.delete(doc.getReference());
+                }
             }
-        });
 
-        batch.delete(userDocRef);
-        batch.commit().addOnSuccessListener(aVoid -> {
-            deleteAuthenticationAccount(user);
+            batch.delete(userDocRef);
+            batch.commit().addOnSuccessListener(aVoid2 -> {
+                deleteAuthenticationAccount(user);
+            }).addOnFailureListener(e -> {
+                View view = getView();
+                if (view != null) {
+                    Snackbar.make(view, "Failed to clear user data", Snackbar.LENGTH_LONG).show();
+                }
+            });
         }).addOnFailureListener(e -> {
             View view = getView();
             if (view != null) {
-                Snackbar.make(view, "Failed to clear user data", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Failed to fetch user data for deletion", Snackbar.LENGTH_LONG).show();
             }
         });
-
     }
 
     // Helper method to keep the code clean and readable
